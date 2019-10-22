@@ -68,16 +68,19 @@ class Header extends Component {
                     <ul className="navbar-nav mr-auto flex-row">
                         <li className="nav-item">
                             { /* Button used to collapse the left sidebar. Only visible on tablet and desktops */ }
+                            {/* eslint-disable-next-line*/}
                             <a href="" className="nav-link d-none d-md-block d-lg-block d-xl-block" onClick={ this.toggleCollapsed }>
                                 <em className="fas fa-bars"></em>
                             </a>
                             { /* Button to show/hide the sidebar on mobile. Visible on mobile only. */ }
+                            {/* eslint-disable-next-line*/}
                             <a href=""  className="nav-link sidebar-toggle d-md-none" onClick={ this.toggleAside }>
                                 <em className="fas fa-bars"></em>
                             </a>
                         </li>
                         { /* START User avatar toggle */ }
                         <li className="nav-item d-none d-md-block">
+                            {/* eslint-disable-next-line*/}
                             <a  className="nav-link" onClick={ this.toggleUserblock }>
                                 <em className="icon-user"></em>
                             </a>
@@ -96,6 +99,7 @@ class Header extends Component {
                     <ul className="navbar-nav flex-row">
                         { /* Search icon */ }
                         <li className="nav-item">
+                            {/* eslint-disable-next-line*/}
                             <a className="nav-link" href="" data-search-open="">
                                 <em className="icon-magnifier"></em>
                             </a>
@@ -163,6 +167,7 @@ class Header extends Component {
                         { /* END Alert menu */ }
                         { /* START Offsidebar button */ }
                         <li className="nav-item">
+                            {/* eslint-disable-next-line*/}
                             <a className="nav-link" href="" onClick={this.toggleOffsidebar}>
                                 <em className="icon-notebook"></em>
                             </a>

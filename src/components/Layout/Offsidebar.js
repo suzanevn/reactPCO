@@ -255,6 +255,7 @@ class Offsidebar extends Component {
                                         <div className="media">
                                             <img className="align-self-center mr-3 rounded-circle thumb48" src="img/user/05.jpg" alt="User avatar" />
                                             <div className="media-body text-truncate">
+                                                {/* eslint-disable-next-line*/}
                                                 <a href="">
                                                     <strong>Juan Sims</strong>
                                                 </a>
@@ -270,6 +271,7 @@ class Offsidebar extends Component {
                                         <div className="media">
                                             <img className="align-self-center mr-3 rounded-circle thumb48" src="img/user/06.jpg" alt="User avatar" />
                                             <div className="media-body text-truncate">
+                                                {/* eslint-disable-next-line*/}
                                                 <a href="">
                                                     <strong>Maureen Jenkins</strong>
                                                 </a>
@@ -285,6 +287,7 @@ class Offsidebar extends Component {
                                         <div className="media">
                                             <img className="align-self-center mr-3 rounded-circle thumb48" src="img/user/07.jpg" alt="User avatar" />
                                             <div className="media-body text-truncate">
+                                                {/* eslint-disable-next-line*/}
                                                 <a href="">
                                                     <strong>Billie Dunn</strong>
                                                 </a>
@@ -300,6 +303,7 @@ class Offsidebar extends Component {
                                         <div className="media">
                                             <img className="align-self-center mr-3 rounded-circle thumb48" src="img/user/08.jpg" alt="User avatar" />
                                             <div className="media-body text-truncate">
+                                                {/* eslint-disable-next-line*/}
                                                 <a href="">
                                                     <strong>Tomothy Roberts</strong>
                                                 </a>
@@ -320,6 +324,7 @@ class Offsidebar extends Component {
                                         <div className="media">
                                             <img className="align-self-center mr-3 rounded-circle thumb48" src="img/user/09.jpg" alt="User avatar" />
                                             <div className="media-body text-truncate">
+                                                {/* eslint-disable-next-line*/}
                                                 <a href="">
                                                     <strong>Lawrence Robinson</strong>
                                                 </a>
@@ -335,6 +340,7 @@ class Offsidebar extends Component {
                                         <div className="media">
                                             <img className="align-self-center mr-3 rounded-circle thumb48" src="img/user/10.jpg" alt="User avatar" />
                                             <div className="media-body text-truncate">
+                                                {/* eslint-disable-next-line*/}
                                                 <a href="">
                                                     <strong>Tyrone Owens</strong>
                                                 </a>
@@ -349,6 +355,7 @@ class Offsidebar extends Component {
                                 </div>
                                 <div className="px-3 py-4 text-center">
                                     { /* Optional link to list more users */ }
+                                    {/* eslint-disable-next-line*/}
                                     <a className="btn btn-purple btn-sm" href="" title="See more contacts">
                                         <strong>Load more..</strong>
                                     </a>
