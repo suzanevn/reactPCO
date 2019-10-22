@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, ListGroup, ListGroupItem } from 'reactstrap';
+//import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, ListGroup, ListGroupItem } from 'reactstrap';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -109,16 +109,16 @@ class Header extends Component {
                             <ToggleFullscreen className="nav-link"/>
                         </li>
                         { /* START Alert menu */ }
-                        <UncontrolledDropdown nav inNavbar className="dropdown-list">
+                        {/* <UncontrolledDropdown nav inNavbar className="dropdown-list">
                             <DropdownToggle nav className="dropdown-toggle-nocaret">
                                 <em className="icon-bell"></em>
                                 <span className="badge badge-danger">11</span>
-                            </DropdownToggle>
+                            </DropdownToggle> */}
                             { /* START Dropdown menu */ }
-                            <DropdownMenu right className="dropdown-menu-right animated flipInX">
-                                <DropdownItem>
+                            {/* <DropdownMenu right className="dropdown-menu-right animated flipInX">
+                                <DropdownItem> */}
                                     { /* START list group */ }
-                                    <ListGroup>
+                                    {/* <ListGroup>
                                        <ListGroupItem action tag="a" href="" onClick={e => e.preventDefault()}>
                                           <div className="media">
                                              <div className="align-self-start mr-2">
@@ -158,12 +158,12 @@ class Header extends Component {
                                              <span className="badge badge-danger ml-auto">14</span>
                                           </span>
                                        </ListGroupItem>
-                                    </ListGroup>
+                                    </ListGroup> */}
                                     { /* END list group */ }
-                                </DropdownItem>
-                            </DropdownMenu>
+                                {/* </DropdownItem>
+                            </DropdownMenu> */}
                             { /* END Dropdown menu */ }
-                        </UncontrolledDropdown>
+                        {/* </UncontrolledDropdown> */}
                         { /* END Alert menu */ }
                         { /* START Offsidebar button */ }
                         <li className="nav-item">

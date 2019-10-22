@@ -15,13 +15,13 @@ const Menu = [
         translate: 'sidebar.nav.MENU',
         label: { value: 1, color: 'info' },
         submenu: [{
-            name: 'Submenu',
-            translate: 'sidebar.nav.SUBMENU',
-            path: 'submenu'
+            name: 'Login',
+            path: '/login',
+            translate: 'titles.login'
         },
         {
             name: 'PCO',
-            translate: 'sidebar.nav.SUBMENU',
+            translate: 'titles.pco',
             path: 'pcoView'
         }
     ]

@@ -13,8 +13,9 @@ import BasePage from './components/Layout/BasePage';
 const waitFor = Tag => props => <Tag {...props}/>;
 
 const SingleView = lazy(() => import('./components/SingleView/SingleView'));
-const SubMenu = lazy(() => import('./components/SubMenu/SubMenu'));
+//const SubMenu = lazy(() => import('./components/SubMenu/SubMenu'));
 const PcoView = lazy(() => import('./components/PcoView/PcoView'));
+const Login = lazy(() => import('./components/Pages/Login'));
 
 // List of routes that uses the page layout
 // listed here to Switch between layouts
@@ -57,10 +58,10 @@ const Routes = ({ location }) => {
                         <Suspense fallback={<PageLoader/>}>
                             <Switch location={location}>
                                 <Route path="/singleview" component={waitFor(SingleView)}/>
-                                <Route path="/submenu" component={waitFor(SubMenu)}/>
+                                <Route path="/login" component={waitFor(Login)}/>
                                 <Route path="/pcoview" component={waitFor(PcoView)}/>
 
-                                <Redirect to="/singleview"/>
+                                <Redirect to="/login"/>
                             </Switch>
                         </Suspense>
                     </div>
