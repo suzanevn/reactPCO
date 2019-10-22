@@ -74,6 +74,7 @@
     "morris.js.so": "0.5.1",
     "nestable": "themicon/nestable",
     "pdfmake": "0.1.39",
+    "primeicons": "^2.0.0",
     "primereact": "^3.3.2",
     "raf": "3.4.1",
     "raphael": "2.2.7",
