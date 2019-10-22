@@ -17,7 +17,7 @@ export class NodeService {
     convertJson(){
         //this.nodeservice.getTreeTableNodes().then(data => this.setState({ nodes: data }));
         //var resp;
-        return axios.get('./data/dados.json').then(res => res.data.root);
+        return axios.get('./data/novodados.json').then(res => res.data.root);
         //var json = axios.get('./data/dados.json').then(res => res.data.root);
         // console.log('json ', json)
         // console.log('json data', json.data)

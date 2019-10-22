@@ -1,6 +1,7 @@
 {
     "root": [
                 {
+                    "grupo":"Grupo 1",
                     "cc": "CTR001",
                     "conta": "C1010",
                     "item": "002",
@@ -32,6 +33,7 @@
                     "status": "aberto"
                 },
                 {
+                    "grupo":"Grupo 2",
                     "cc": "CTR002",
                     "conta": "C1010",
                     "item": "002",
@@ -63,6 +65,7 @@
                     "status": "aberto"
                 },
                 {
+                    "grupo":"Grupo 2",
                     "cc": "CTR002",
                     "conta": "C1010",
                     "item": "002",
@@ -94,6 +97,7 @@
                     "status": "aberto"
                 },
                 {
+                    "grupo":"Grupo 3",
                     "cc": "CTR002",
                     "conta": "C1010",
                     "item": "002",
@@ -125,6 +129,7 @@
                     "status": "aberto"
                 },
                 {
+                    "grupo":"Grupo 4",
                     "cc": "CTR005",
                     "conta": "C1010",
                     "item": "001",
@@ -156,6 +161,7 @@
                     "status": "aberto"
                 },
                 {
+                    "grupo":"Grupo 4",
                     "cc": "CTR005",
                     "conta": "C1010",
                     "item": "002",
@@ -187,6 +193,7 @@
                     "status": "aberto"
                 },
                 {
+                    "grupo":"Grupo 5",
                     "cc": "CTR006",
                     "conta": "C1010",
                     "item": "002",

@@ -1,0 +1,26 @@
+{
+    
+    "root": [
+            {
+                "grupo":"Grupo1", "cc":"CTR001", "conta":"C1010", "item":"Item1", "jan":300,"janalt":64,"fev":100,"fevalt":82,"mar":300,"maralt":64,"abr":300,
+                "abralt":64,"mai":300,"maialt":64,"jun":300,"junalt":64,"jul":300,"julalt":64,"ago":300,"agoalt":64,"set":300,"setalt":64,"out":300,"outalt":64,
+                "nov":300,"novalt":64,"dez":300, "dezalt":64
+            },
+            {  
+                "grupo":"Grupo11", "cc":"CTR001", "conta":"C1010", "item":"Item2","jan":50,"janalt":60,"fev":70,"fevalt":80,"mar":300,"maralt":64,"abr":300,
+                "abralt":64,"mai":300,"maialt":64,"jun":300,"junalt":64,"jul":300,"julalt":64,"ago":300,"agoalt":64,"set":300,"setalt":64,"out":300,"outalt":64,
+                "nov":300,"novalt":64,"dez":300,"dezalt":64
+            },
+            {
+                "grupo":"Grupo2","cc":"CTR002","conta":"C2020","item":"Item1","jan":25,"janalt":25,"fev":45,"fevalt":45,"mar":300,"maralt":64,"abr":300,
+                "abralt":64,"mai":300,"maialt":64,"jun":300,"junalt":64,"jul":300,"julalt":64,"ago":300,"agoalt":64,"set":300,"setalt":64,"out":300,"outalt":64,
+                "nov":300,"novalt":64,"dez":300,"dezalt":64
+            },
+            {
+                "grupo":"Grupo22","cc":"CTR002","conta":"C2020","item":"Item2","jan":15,"janalt":25,"fev":35,"fevalt":45,"mar":300,"maralt":64,"abr":300,
+                "abralt":64,"mai":300,"maialt":64,"jun":300,"junalt":64,"jul":300,"julalt":64,"ago":300,"agoalt":64,"set":300,"setalt":64,"out":300,"outalt":64,
+                "nov":300,"novalt":64,"dez":300,"dezalt":64
+            }
+        ]
+}
+
