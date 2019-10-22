@@ -7,7 +7,7 @@ import { Button, ButtonGroup, Modal, ModalHeader, ModalBody, ModalFooter, Card,
          Dropdown, DropdownToggle,  DropdownMenu, DropdownItem } from 'reactstrap';
 import { translate, Trans } from 'react-i18next';
 
-class DataGrid extends Component {
+class PcoList extends Component {
     constructor(props, context) {
         super(props, context);
 console.log('props ini ',props)
@@ -46,35 +46,70 @@ console.log('props ini ',props)
         //noarray.forEach((e)=> {
         for(let i=0;i<noarray.length;i++){
             console.log('e ',noarray, 'ant ',ccant)
-            if(noarray[i].cc==='' || noarray[i].cc===ccant){
+            //if(noarray[i].cc==='' || noarray[i].cc===ccant){
                 myMap.set("cc", noarray[i].cc);
                 jsonarray.push({
-                    key: noarray[i].cc,
+                    key: noarray[i].grupo,
+                    expanded: true,
+                    data:{
+                        grupoccconta: noarray[i].grupo
+                    },
+                    children:[  
+                        {  
+                            key: noarray[i].grupo+"-"+noarray[i].cc,
+                            data:{
+                                grupoccconta:noarray[i].cc
+                            },
+                            children:[  
+                                {  
+                                    key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta,
+                                    data:{
+                                        grupoccconta:noarray[i].conta
+                                    },
+                                    children:[  
+                                        {  
+                                            key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta+"-"+noarray[i].item,
+                                            data:{  
+                                                grupoccconta:"",
+                                                item:noarray[i].item
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
                     cc: noarray[i].cc,
-                    children: [{
-                        "name": "child1"
-                      },
-                      {
-                        "name": "child2"
-                      }
-                    ]
                 });
                 console.log('criar no child')
-            }else{
-                myMap.set("cc", noarray[i].cc);
-                jsonarray.push({
-                    key: noarray[i].cc,
-                    cc: noarray[i].cc,
-                    children: [{
-                        "name": "child1"
-                      },
-                      {
-                        "name": "child2"
-                      }
-                    ]
-                });
+           // }else{
+                // myMap.set("cc", noarray[i].cc);
+                // jsonarray.push({
+                //     key: noarray[i].cc,
+                //     expanded: true,
+                //     data:{
+                //         grupoccconta: noarray[i].cc
+                //     },
+                //     children:[  
+                //         {  
+                //             key: noarray[i].cc+"-"+noarray[i].conta,
+                //         }
+                //     ],
+                //     cc: noarray[i].cc,
+                // });
+                // jsonarray.push({
+                //     key: noarray[i].cc,
+                //     cc: noarray[i].cc,
+                //     children: [{
+                //         "name": "child1"
+                //       },
+                //       {
+                //         "name": "child2"
+                //       }
+                //     ]
+                // });
                 console.log('ir para proximo')
-            }
+           // }
             ccant=noarray[i].cc;
            // i++;
         }
@@ -249,10 +284,9 @@ console.log('props ini ',props)
     render() {
         // let style={backgroundColor:'#ffffb3'}
         const {t}= this.props;
-        //const {t}= useTranslation();
         return (
             <div className="App">
-                <div className="content-section introduction treetableeditdemo" >
+                <div className="content-section introduction treetableeditdemo">
                     <div className="feature-intro">
                         <div className="ml-auto">
                         <h1>PCO</h1>
@@ -280,36 +314,39 @@ console.log('props ini ',props)
                         <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
-                <div className="table table-bordered content-section implementation react-grid-Header" >
+                <div className="react-grid-Main">
+                {/* <div className="table table-bordered content-section implementation react-grid-Header"> */}
                     <TreeTable value={this.state.nodes} expandedKeys={this.state.expandedKeys} 
-                        rowClassName={this.rowClassName} scrollable scrollHeight="700px" scrollWidth="1600px" 
+                    tableClassName="p-treetable p-component " scrollable scrollHeight="700px" scrollWidth="1600px"  
+                    // tableClassName="table bg-gray-dark"
+                        rowClassName={this.rowClassName} 
                         onToggle={e => this.setState({ expandedKeys: e.value })} responsive >
-                        <Column field="grupoccconta" header="Grupo / CC / Conta" expander />
-                        <Column field="item" header="Item"  />
-                        <Column field="jan" header={t('titles.jan')}  />
-                        <Column field="janalt" header={t('titles.janalt')} editor={this.valueEditor}  />
-                        <Column field="fev" header={t('titles.feb')} />
-                        <Column field="fevalt" header={t('titles.febalt')} editor={this.valueEditor} />
-                        <Column field="mar" header={t('titles.mar')} />
-                        <Column field="maralt" header={t('titles.maralt')} editor={this.valueEditor} />
-                        <Column field="abr" header={t('titles.apr')} />
-                        <Column field="abralt" header={t('titles.apralt')} editor={this.valueEditor} />
-                        <Column field="mai" header={t('titles.may')} />
-                        <Column field="maialt" header={t('titles.mayalt')} editor={this.valueEditor} />
-                        <Column field="jun" header={t('titles.jun')} />
-                        <Column field="junalt" header={t('titles.junalt')} editor={this.valueEditor} />
-                        <Column field="jul" header={t('titles.jul')} />
-                        <Column field="julalt" header={t('titles.julalt')} editor={this.valueEditor} />
-                        <Column field="ago" header={t('titles.aug')} />
-                        <Column field="agoalt" header={t('titles.augalt')} editor={this.valueEditor} />
-                        <Column field="set" header={t('titles.sep')} />
-                        <Column field="setalt" header={t('titles.sepalt')} editor={this.valueEditor} />
-                        <Column field="out" header={t('titles.oct')} />
-                        <Column field="outalt" header={t('titles.octalt')} editor={this.valueEditor} />
-                        <Column field="nov" header={t('titles.nov')} />
-                        <Column field="novalt" header={t('titles.novalt')} editor={this.valueEditor} />
-                        <Column field="dez" header={t('titles.dec')} />
-                        <Column field="dezalt" header={t('titles.decalt')} editor={this.valueEditor} />
+                        <Column field="grupoccconta" header="Grupo / CC / Conta" expander style={{ width: '200px' }} />
+                        <Column field="item" header="Item" style={{ width: '70px' }} />
+                        <Column field="jan" header={t('titles.jan')} style={{ width: '70px' }} />
+                        <Column field="janalt" header={t('titles.janalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'1' }} />
+                        <Column field="fev" header={t('titles.feb')} style={{ width: '70px' }} />
+                        <Column field="fevalt" header={t('titles.febalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'2' }} />
+                        <Column field="mar" header={t('titles.mar')} style={{ width: '70px' }} />
+                        <Column field="maralt" header={t('titles.maralt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'3' }} />
+                        <Column field="abr" header={t('titles.apr')} style={{ width: '70px' }} />
+                        <Column field="abralt" header={t('titles.apralt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'4' }} />
+                        <Column field="mai" header={t('titles.may')} style={{ width: '70px' }} />
+                        <Column field="maialt" header={t('titles.mayalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'5' }} />
+                        <Column field="jun" header={t('titles.jun')} style={{ width: '70px' }} />
+                        <Column field="junalt" header={t('titles.junalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'6' }} />
+                        <Column field="jul" header={t('titles.jul')} style={{ width: '70px' }} />
+                        <Column field="julalt" header={t('titles.julalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'7' }} />
+                        <Column field="ago" header={t('titles.aug')} style={{ width: '70px' }} />
+                        <Column field="agoalt" header={t('titles.augalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'8' }} />
+                        <Column field="set" header={t('titles.sep')} style={{ width: '70px' }} />
+                        <Column field="setalt" header={t('titles.sepalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'9' }} />
+                        <Column field="out" header={t('titles.oct')} style={{ width: '70px' }} />
+                        <Column field="outalt" header={t('titles.octalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'10' }} />
+                        <Column field="nov" header={t('titles.nov')} style={{ width: '70px' }} />
+                        <Column field="novalt" header={t('titles.novalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'11' }} />
+                        <Column field="dez" header={t('titles.dec')} style={{ width: '70px' }} />
+                        <Column field="dezalt" header={t('titles.decalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'12' }} />
                         <Column body={(e) => this.actionTemplate(e)} style={{ textAlign: 'center', width: '8em', tabIndex:'13' }} />
                     </TreeTable>
                     <div className="content-heading">
@@ -327,4 +364,4 @@ console.log('props ini ',props)
     }
 }
 
-export default translate('translations')(DataGrid);
+export default translate('translations')(PcoList);

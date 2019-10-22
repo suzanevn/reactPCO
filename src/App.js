@@ -20,6 +20,8 @@ import "./Vendor";
 // Application Styles
 import './styles/bootstrap.scss';
 import './styles/app.scss'
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 
 class App extends Component {
