@@ -249,6 +249,7 @@ console.log('props ini ',props)
     render() {
         // let style={backgroundColor:'#ffffb3'}
         const {t}= this.props;
+        //const {t}= useTranslation();
         return (
             <div className="App">
                 <div className="content-section introduction treetableeditdemo" >
@@ -281,7 +282,7 @@ console.log('props ini ',props)
                 </Modal>
                 <div className="table table-bordered content-section implementation react-grid-Header" >
                     <TreeTable value={this.state.nodes} expandedKeys={this.state.expandedKeys} 
-                        rowClassName={this.rowClassName}   
+                        rowClassName={this.rowClassName} scrollable scrollHeight="700px" scrollWidth="1600px" 
                         onToggle={e => this.setState({ expandedKeys: e.value })} responsive >
                         <Column field="grupoccconta" header="Grupo / CC / Conta" expander />
                         <Column field="item" header="Item"  />
