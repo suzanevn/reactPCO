@@ -10,7 +10,6 @@ import { translate, Trans } from 'react-i18next';
 class PcoList extends Component {
     constructor(props, context) {
         super(props, context);
-console.log('props ini ',props)
 
         this.state = {
             count: 0,
@@ -18,7 +17,8 @@ console.log('props ini ',props)
             expandedKeys: {},
             dropdownOpen: false,
             modal: false,
-            nodesSemFormat: []
+            nodesSemFormat: [],
+            nodesFormat: []
         };
         this.nodeservice = new NodeService();
 
@@ -30,9 +30,10 @@ console.log('props ini ',props)
     }
 
     forJson(){
-        console.log('for json ',this.state.nodesSemFormat)
+        console.log('sem formato ',this.state.nodesSemFormat)
+        console.log('nodes atual ',this.state.nodes)
         let noarray = this.state.nodesSemFormat
-        let ccant='';
+        //let ccant='';
         //let novoarray = [];
         // for(let i=0; i<noarray.length;i++){
        
@@ -45,7 +46,6 @@ console.log('props ini ',props)
         //let i=0;
         //noarray.forEach((e)=> {
         for(let i=0;i<noarray.length;i++){
-            console.log('e ',noarray, 'ant ',ccant)
             //if(noarray[i].cc==='' || noarray[i].cc===ccant){
                 myMap.set("cc", noarray[i].cc);
                 jsonarray.push({
@@ -57,18 +57,21 @@ console.log('props ini ',props)
                     children:[  
                         {  
                             key: noarray[i].grupo+"-"+noarray[i].cc,
+                            expanded: true,
                             data:{
                                 grupoccconta:noarray[i].cc
                             },
                             children:[  
                                 {  
                                     key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta,
+                                    expanded: true,
                                     data:{
                                         grupoccconta:noarray[i].conta
                                     },
                                     children:[  
                                         {  
                                             key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta+"-"+noarray[i].item,
+                                            expanded: true,
                                             data:{  
                                                 grupoccconta:"",
                                                 item:noarray[i].item
@@ -81,51 +84,21 @@ console.log('props ini ',props)
                     ],
                     cc: noarray[i].cc,
                 });
-                console.log('criar no child')
-           // }else{
-                // myMap.set("cc", noarray[i].cc);
-                // jsonarray.push({
-                //     key: noarray[i].cc,
-                //     expanded: true,
-                //     data:{
-                //         grupoccconta: noarray[i].cc
-                //     },
-                //     children:[  
-                //         {  
-                //             key: noarray[i].cc+"-"+noarray[i].conta,
-                //         }
-                //     ],
-                //     cc: noarray[i].cc,
-                // });
-                // jsonarray.push({
-                //     key: noarray[i].cc,
-                //     cc: noarray[i].cc,
-                //     children: [{
-                //         "name": "child1"
-                //       },
-                //       {
-                //         "name": "child2"
-                //       }
-                //     ]
-                // });
-                console.log('ir para proximo')
-           // }
-            ccant=noarray[i].cc;
-           // i++;
         }
 
-        console.log("map ", myMap)
+        //console.log("map ", myMap)
         console.log("json resp ", jsonarray)
+        this.setState({
+            nodesFormat:jsonarray
+        })
 
         // let json = this.state.nodesSemFormat;
         // json.forEach(function(obj) {
         //     //var ul = document.createElement('ul');
         //     //document.body.appendChild(ul);
-        //     console.log('obj ',obj)
         //     //this.criarSubPasta(obj, ul);
         // })
 
-        // console.log('resultado ',json)
     }
     criarSubPasta(obj, parent) {
         // criar <li>nome</li>
@@ -178,15 +151,12 @@ console.log('props ini ',props)
         let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
         //busca o no pai e altera o total
         let noPai = this.findNodeByKey(newNodes, props.node.key.split('-')[0])
-        console.log('props field', props.field, 'no pai', noPai, 'total', props.node.data[props.field], 'valant', valueAnt, 'valatual', value)
         noPai.data[props.field] = noPai.data[props.field] - parseInt(valueAnt, 10) + parseInt(value, 10)
 
         //busca o no atual e seta o novo valor e altera o status
         let editedNode = this.findNodeByKey(newNodes, props.node.key);
         editedNode.data[props.field] = value;
         editedNode.data.status = 'alterado'
-        //console.log('node by key ',this.findNodeByKey(newNodes, separado[0]+'-'+separado[1]+'-'+separado[2]))
-        //console.log('children ',newNodes[separado[0]].children[separado[1]])
 
         this.setState({
             nodes: newNodes
@@ -205,12 +175,14 @@ console.log('props ini ',props)
     }
 
     inputTextEditor(props, field) {
-        //console.log('props tab index', props)
-        console.log('input ', props, field)
         this.rowClassName(props.node)
+        // let c=this.state.count+1;
+        // this.setState({
+        //     count: c
+        // })
         return (
             <div>
-                <InputText type="text" value={props.node.data[field]} style={{width:'50px'}}
+                <InputText type="text" value={props.node.data[field]} style={{width:'50px'}} //tabIndex={this.state.count}
                     onChange={(e) => this.onEditorValueChange(props, e.target.value)} />
                 <Button color="primary" size="xs" onClick={this.toggleModal} data-toggle="tooltip" title="Justificativa">
                     <em className="fa-1x icon-plus xs-1"></em>
@@ -227,7 +199,6 @@ console.log('props ini ',props)
 
     //se não for nó do item não deixa aparecer o input para editar
     valueEditor(props) {
-        //console.log('value editor', props.node.data.corFundo)
         let separado = props.node.key.split('-')
         if (separado.length >= 4) {
             return this.inputTextEditor(props, props.field);
@@ -242,7 +213,6 @@ console.log('props ini ',props)
     //altera a cor da linha
     rowClassName(node) {
         let keys = node.key.split('-')
-        //console.log('row class name status', node.data.status)
         return {
             'bg-gray': (keys.length === 1), 'bg-gray-light': (keys.length === 2), 'bg-gray-lighter': (keys.length === 3),
             'bg-yellow-light': node.data.status === 'alterado', 'bg-success-light':node.data.status==='confirmed', 'bg-danger-light':node.data.status==='rejected'
@@ -250,7 +220,6 @@ console.log('props ini ',props)
     }
 
     onRefreshStatus(props, value) {
-        console.log('on refresh',props,value)
         let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
         let editedNode = this.findNodeByKey(newNodes, props.key);
         editedNode.data.status = value
@@ -314,8 +283,8 @@ console.log('props ini ',props)
                         <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
-                <div className="react-grid-Main">
-                {/* <div className="table table-bordered content-section implementation react-grid-Header"> */}
+                {/* <div className="react-grid-Main"> */}
+                <div className="table table-bordered content-section implementation react-grid-Header">
                     <TreeTable value={this.state.nodes} expandedKeys={this.state.expandedKeys} 
                     tableClassName="p-treetable p-component " scrollable scrollHeight="700px" scrollWidth="1600px"  
                     // tableClassName="table bg-gray-dark"
@@ -324,40 +293,31 @@ console.log('props ini ',props)
                         <Column field="grupoccconta" header="Grupo / CC / Conta" expander style={{ width: '200px' }} />
                         <Column field="item" header="Item" style={{ width: '70px' }} />
                         <Column field="jan" header={t('titles.jan')} style={{ width: '70px' }} />
-                        <Column field="janalt" header={t('titles.janalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'1' }} />
+                        <Column field="janalt" header={t('titles.janalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={1} />
                         <Column field="fev" header={t('titles.feb')} style={{ width: '70px' }} />
-                        <Column field="fevalt" header={t('titles.febalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'2' }} />
+                        <Column field="fevalt" header={t('titles.febalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={2} />
                         <Column field="mar" header={t('titles.mar')} style={{ width: '70px' }} />
-                        <Column field="maralt" header={t('titles.maralt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'3' }} />
+                        <Column field="maralt" header={t('titles.maralt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={3} />
                         <Column field="abr" header={t('titles.apr')} style={{ width: '70px' }} />
-                        <Column field="abralt" header={t('titles.apralt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'4' }} />
+                        <Column field="abralt" header={t('titles.apralt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={4} />
                         <Column field="mai" header={t('titles.may')} style={{ width: '70px' }} />
-                        <Column field="maialt" header={t('titles.mayalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'5' }} />
+                        <Column field="maialt" header={t('titles.mayalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={5} />
                         <Column field="jun" header={t('titles.jun')} style={{ width: '70px' }} />
-                        <Column field="junalt" header={t('titles.junalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'6' }} />
+                        <Column field="junalt" header={t('titles.junalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={6} />
                         <Column field="jul" header={t('titles.jul')} style={{ width: '70px' }} />
-                        <Column field="julalt" header={t('titles.julalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'7' }} />
+                        <Column field="julalt" header={t('titles.julalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={7} />
                         <Column field="ago" header={t('titles.aug')} style={{ width: '70px' }} />
-                        <Column field="agoalt" header={t('titles.augalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'8' }} />
+                        <Column field="agoalt" header={t('titles.augalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={8} />
                         <Column field="set" header={t('titles.sep')} style={{ width: '70px' }} />
-                        <Column field="setalt" header={t('titles.sepalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'9' }} />
+                        <Column field="setalt" header={t('titles.sepalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={9} />
                         <Column field="out" header={t('titles.oct')} style={{ width: '70px' }} />
-                        <Column field="outalt" header={t('titles.octalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'10' }} />
+                        <Column field="outalt" header={t('titles.octalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={10} />
                         <Column field="nov" header={t('titles.nov')} style={{ width: '70px' }} />
-                        <Column field="novalt" header={t('titles.novalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'11' }} />
+                        <Column field="novalt" header={t('titles.novalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={11} />
                         <Column field="dez" header={t('titles.dec')} style={{ width: '70px' }} />
-                        <Column field="dezalt" header={t('titles.decalt')} editor={this.valueEditor} style={{ width: '70px', tabIndex:'12' }} />
-                        <Column body={(e) => this.actionTemplate(e)} style={{ textAlign: 'center', width: '8em', tabIndex:'13' }} />
+                        <Column field="dezalt" header={t('titles.decalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={12} />
+                        <Column body={(e) => this.actionTemplate(e)} style={{ textAlign: 'center', width: '8em' }} />
                     </TreeTable>
-                    <div className="content-heading">
-                    <div>Dashboard
-                        <small><Trans i18nKey='dashboard.WELCOME'></Trans></small>
-                    </div>
-                    <div>{t('dashboard.WELCOME')}</div>
-                    {/* <Trans i18nKey="dashboard" >
-                        Hello <strong title={t('WELCOME')}></strong>, you have unread message. 
-                        </Trans> */}
-                    </div>
                 </div>
             </div>
         )
