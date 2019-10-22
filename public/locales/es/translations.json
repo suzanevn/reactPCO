@@ -24,7 +24,9 @@
     "nov": "Nov",
     "novalt": "Nov Alt",
     "dec": "Dez",
-    "decalt": "Dez Alt"
+    "decalt": "Dez Alt",
+    "login": "Login",
+    "pco": "PCO"
   },
   "dashboard": {
     "WELCOME": "Bienvenido a Angle"
