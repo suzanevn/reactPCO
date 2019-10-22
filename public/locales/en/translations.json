@@ -1,0 +1,50 @@
+{
+  "titles":{
+    "justification": "Justification",
+    "jan": "Jan",
+    "janalt": "Jan Alt",
+    "feb": "Feb",
+    "febalt": "Feb Alt",
+    "mar": "Mar",
+    "maralt": "Mar Alt",
+    "apr": "Apr",
+    "apralt": "Apr Alt",
+    "may": "May",
+    "mayalt": "May Alt",
+    "jun": "Jun",
+    "junalt": "Jun Alt",
+    "jul": "Jul",
+    "julalt": "Jul Alt",
+    "aug": "Aug",
+    "augalt": "Aut Alt",
+    "sep": "Sep",
+    "sepalt": "Sep Alt",
+    "oct": "Oct",
+    "octalt": "Oct Alt",
+    "nov": "Nov",
+    "novalt": "Nov Alt",
+    "dec": "Dec",
+    "decalt": "Dec Alt"
+  },
+  "dashboard": {
+    "WELCOME": "Welcome to Angle !"
+  },
+  "topbar": {
+    "search": {
+      "PLACEHOLDER": "Type and hit enter.."
+    }
+  },
+  "sidebar": {
+    "WELCOME": "Welcome",
+    "heading": {
+      "HEADER": "Main Navigation"
+    },
+    "nav": {
+      "SINGLEVIEW": "Single View",
+      "menu": {
+        "MENU": "Menu",
+        "SUBMENU": "Sub Menu"
+      }
+    }
+  }
+}

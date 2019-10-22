@@ -1,0 +1,50 @@
+{
+  "titles":{
+    "justification": "Justificativa",
+    "jan": "Jan",
+    "janalt": "Jan Alt",
+    "feb": "Fev",
+    "febalt": "Fev Alt",
+    "mar": "Mar",
+    "maralt": "Mar Alt",
+    "apr": "Abr",
+    "apralt": "Abr Alt",
+    "may": "Mai",
+    "mayalt": "Mai Alt",
+    "jun": "Jun",
+    "junalt": "Jun Alt",
+    "jul": "Jul",
+    "julalt": "Jul Alt",
+    "aug": "Ago",
+    "augalt": "Ago Alt",
+    "sep": "Set",
+    "sepalt": "Set Alt",
+    "oct": "Out",
+    "octalt": "Out Alt",
+    "nov": "Nov",
+    "novalt": "Nov Alt",
+    "dec": "Dez",
+    "decalt": "Dez Alt"
+  },
+  "dashboard": {
+    "WELCOME": "Bienvenido a Angle"
+  },
+  "topbar": {
+    "search": {
+      "PLACEHOLDER": "Tipea y pulsa enter.."
+    }
+  },
+  "sidebar": {
+    "WELCOME": "Bienvenido",
+    "heading": {
+      "HEADER": "Navegacion principal"
+    },
+    "nav": {
+      "SINGLEVIEW": "Vista simple",
+      "menu": {
+        "MENU": "Menu",
+        "SUBMENU": "Sub Menu"
+      }
+    }
+  }
+}
