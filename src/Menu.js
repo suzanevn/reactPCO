@@ -25,6 +25,11 @@ const Menu = [
             path: 'pcoView'
         },
         {
+            name: 'PCONova',
+            translate: 'titles.pco2',
+            path: 'pcoViewNova'
+        },
+        {
             name: 'PCO Planilha',
             translate: 'titles.pcoplanilha',
             path: 'pcoPlan'
