@@ -26,7 +26,12 @@
     "dec": "Dez",
     "decalt": "Dez Alt",
     "login": "Login",
-    "pco": "PCO"
+    "pco": "PCO",
+    "pcoplanilha": "PCO Planilha",
+    "name":"Nome",
+    "year":"Ano",
+    "status":"Status",
+    "action":"A\u00E7\u00F5es"
   },
   "dashboard": {
     "WELCOME": "Bienvenido a Angle"

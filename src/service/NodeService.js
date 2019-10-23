@@ -9,6 +9,11 @@ export class NodeService {
                 .then(res => res.data.root);
     }
 
+    getPlanilhas() {
+        return axios.get('./data/pcoplan.json')
+                .then(res => res.data.root);
+    }
+
     getTreeNodes() {
         return axios.get('./data/treetablenodes.json')
                 .then(res => res.data.root);

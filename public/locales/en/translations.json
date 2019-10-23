@@ -26,7 +26,12 @@
     "dec": "Dec",
     "decalt": "Dec Alt",
     "login": "Login",
-    "pco": "PCO"
+    "pco": "PCO",
+    "pcoplanilha": "PCO Plan",
+    "name":"Name",
+    "year":"Year",
+    "status":"Status",
+    "action":"Action"
   },
   "dashboard": {
     "WELCOME": "Welcome to Angle !"

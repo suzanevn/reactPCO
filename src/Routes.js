@@ -15,6 +15,7 @@ const waitFor = Tag => props => <Tag {...props}/>;
 const SingleView = lazy(() => import('./components/SingleView/SingleView'));
 //const SubMenu = lazy(() => import('./components/SubMenu/SubMenu'));
 const PcoView = lazy(() => import('./components/PcoView/PcoView'));
+const PcoPlan = lazy(() => import('./components/PcoView/PcoPlan'));
 const Login = lazy(() => import('./components/Pages/Login'));
 
 // List of routes that uses the page layout
@@ -60,6 +61,7 @@ const Routes = ({ location }) => {
                                 <Route path="/singleview" component={waitFor(SingleView)}/>
                                 <Route path="/login" component={waitFor(Login)}/>
                                 <Route path="/pcoview" component={waitFor(PcoView)}/>
+                                <Route path="/pcoplan" component={waitFor(PcoPlan)}/>
 
                                 <Redirect to="/login"/>
                             </Switch>
