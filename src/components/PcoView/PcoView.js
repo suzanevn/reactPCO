@@ -23,10 +23,10 @@ class PcoList extends Component {
         this.nodeservice = new NodeService();
 
         this.valueEditor = this.valueEditor.bind(this);
-        //this.requiredValidator = this.requiredValidator.bind(this);
         this.rowClassName = this.rowClassName.bind(this);
         this.onRefreshStatus = this.onRefreshStatus.bind(this);
         this.criarSubPasta = this.criarSubPasta.bind(this);
+        this.renderEditableCell = this.renderEditableCell.bind(this);
     }
 
     forJson(){
@@ -86,7 +86,6 @@ class PcoList extends Component {
                 });
         }
 
-        //console.log("map ", myMap)
         console.log("json resp ", jsonarray)
         this.setState({
             nodesFormat:jsonarray
@@ -123,8 +122,9 @@ class PcoList extends Component {
 
     componentDidMount() {
         this.nodeservice.getTreeTableNodes().then(data => this.setState({ nodes: data }));
-        this.nodeservice.convertJson().then(data => this.setState({ nodesSemFormat: data }, () => this.forJson()));
-        
+        //this.nodeservice.convertJson().then(data => this.setState({ nodesSemFormat: data }, () => this.forJson()));
+        //this.nodeservice.getPlanilhas().then(data => console.log('data', data));
+        //console.log('node ',this.nodeservice)
 
         let expandedKeys = { ...this.state.expandedKeys };
         //expande as colunas
@@ -147,6 +147,27 @@ class PcoList extends Component {
     }
 
     onEditorValueChange(props, value) {
+        console.log('on editor ', props,value)
+        let valueAnt = props.data[props.field];
+        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        //busca o no pai e altera o total
+        let noPai = this.findNodeByKey(newNodes, props.key.split('-')[0])
+        noPai.data[props.field] = noPai.data[props.field] - parseInt(valueAnt, 10) + parseInt(value, 10)
+console.log('no pai ', noPai)
+        //busca o no atual e seta o novo valor e altera o status
+        let editedNode = this.findNodeByKey(newNodes, props.key);
+        console.log('edited node', editedNode)
+        editedNode.data[props.field] = value;
+        editedNode.data.status = 'alterado'
+        console.log('apos edited node', editedNode)
+
+        this.setState({
+            nodes: newNodes
+        });
+    }
+
+    //antigo
+    onEditorValueChange2(props, value) {
         let valueAnt = props.node.data[props.field];
         let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
         //busca o no pai e altera o total
@@ -176,14 +197,10 @@ class PcoList extends Component {
 
     inputTextEditor(props, field) {
         this.rowClassName(props.node)
-        // let c=this.state.count+1;
-        // this.setState({
-        //     count: c
-        // })
         return (
             <div>
                 <InputText type="text" value={props.node.data[field]} style={{width:'50px'}} //tabIndex={this.state.count}
-                    onChange={(e) => this.onEditorValueChange(props, e.target.value)} />
+                    onChange={(e) => this.onEditorValueChange2(props, e.target.value)} />
                 <Button color="primary" size="xs" onClick={this.toggleModal} data-toggle="tooltip" title="Justificativa">
                     <em className="fa-1x icon-plus xs-1"></em>
                 </Button>    
@@ -199,16 +216,36 @@ class PcoList extends Component {
 
     //se não for nó do item não deixa aparecer o input para editar
     valueEditor(props) {
+        console.log('props value editor', props)
         let separado = props.node.key.split('-')
         if (separado.length >= 4) {
             return this.inputTextEditor(props, props.field);
         }
     }
 
-    // requiredValidator(props) {
-    //     let value = props.node.data[props.field];
-    //     return value && value.length > 0;
-    // }
+    renderEditableCell = (row,field) => {
+        //console.log('row teste **********',row)
+        //se for grupo pai ou itens mostra o input, se não não mostra
+        let tamanho = row.data.indice.split('-').length;
+        //console.log('tamanho',tamanho)
+        if(tamanho<2 || tamanho>3){
+            return (
+                <div>
+                    <InputText type="text" value={row.data[field]} style={{width:'50px'}} disabled={tamanho===1} //tabIndex={this.state.count}
+                        onChange={(e) => this.onEditorValueChange(row, e.target.value)}>
+                    </InputText>
+                    <Button color="primary" size="xs" onClick={this.toggleModal} data-toggle="tooltip" title="Justificativa" hidden={tamanho===1}
+                    tabIndex={-1}>
+                        <em className="fa-1x icon-plus xs-1"></em>
+                    </Button>      
+                </div>
+                // <input type="text" value={row.data[value]} disabled={tamanho===1} style={{width:'25px'}}
+                // onChange={(e) => this.onEditorValueChange(row, e.target.value)}/>
+                );
+        }else{
+            return;
+        }
+      }
 
     //altera a cor da linha
     rowClassName(node) {
@@ -293,9 +330,9 @@ class PcoList extends Component {
                         <Column field="grupoccconta" header="Grupo / CC / Conta" expander style={{ width: '200px' }} />
                         <Column field="item" header="Item" style={{ width: '70px' }} />
                         <Column field="jan" header={t('titles.jan')} style={{ width: '70px' }} />
-                        <Column field="janalt" header={t('titles.janalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={1} />
+                        <Column field="janalt" header={t('titles.janalt')} body={(e) => this.renderEditableCell(e,'janalt')} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={1} id={(e)=> console.log('column',e)}/>
                         <Column field="fev" header={t('titles.feb')} style={{ width: '70px' }} />
-                        <Column field="fevalt" header={t('titles.febalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={2} />
+                        <Column field="fevalt" header={t('titles.febalt')} body={(e) => this.renderEditableCell(e,'fevalt')} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={2} />
                         <Column field="mar" header={t('titles.mar')} style={{ width: '70px' }} />
                         <Column field="maralt" header={t('titles.maralt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={3} />
                         <Column field="abr" header={t('titles.apr')} style={{ width: '70px' }} />
@@ -316,7 +353,7 @@ class PcoList extends Component {
                         <Column field="novalt" header={t('titles.novalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={11} />
                         <Column field="dez" header={t('titles.dec')} style={{ width: '70px' }} />
                         <Column field="dezalt" header={t('titles.decalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={12} />
-                        <Column body={(e) => this.actionTemplate(e)} style={{ textAlign: 'center', width: '8em' }} />
+                        <Column body={(e) => this.actionTemplate(e)} style={{ textAlign: 'center', width: '8em' }} tabIndex={13}/>
                     </TreeTable>
                 </div>
             </div>
