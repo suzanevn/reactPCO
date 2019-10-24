@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { NodeService } from '../../service/NodeService';
-import { InputText } from 'primereact/inputtext';
 //import { TreeTable } from 'primereact/treetable';
 import { TreeTable, TreeState } from 'cp-react-tree-table'
 //import { Column } from "primereact/column";
 import { Button, ButtonGroup, Modal, ModalHeader, ModalBody, ModalFooter, Card,
          Dropdown, DropdownToggle,  DropdownMenu, DropdownItem } from 'reactstrap';
 import { translate, Trans } from 'react-i18next';
+//import 'src/components/modals/modals_lpn.css'
+//import './treetable.css'
 
 class PcoList extends Component {
     constructor(props, context) {
@@ -24,11 +25,11 @@ class PcoList extends Component {
         };
         this.nodeservice = new NodeService();
 
-        this.valueEditor = this.valueEditor.bind(this);
         this.rowClassName = this.rowClassName.bind(this);
         this.onRefreshStatus = this.onRefreshStatus.bind(this);
         this.renderIndexCell = this.renderIndexCell.bind(this);
         this.renderEditableCell = this.renderEditableCell.bind(this);
+        this.expand = this.expand.bind(this);
     }
 
     componentDidMount() {
@@ -37,31 +38,21 @@ class PcoList extends Component {
     }
     
     constroi(val) {
-        console.log('val', val)
+        //console.log('val', val)
         this.setState({
             treeValue: TreeState.create(val)
-        })
+        },()=>this.expand())
         console.log('treevalue', this.state.treeValue)
     }
 
-    onEditorValueChange(props, value) {
-        let valueAnt = props.node.data[props.field];
-        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
-        //busca o no pai e altera o total
-        let noPai = this.findNodeByKey(newNodes, props.node.key.split('-')[0])
-        noPai.data[props.field] = noPai.data[props.field] - parseInt(valueAnt, 10) + parseInt(value, 10)
-
-        //busca o no atual e seta o novo valor e altera o status
-        let editedNode = this.findNodeByKey(newNodes, props.node.key);
-        editedNode.data[props.field] = value;
-        editedNode.data.status = 'alterado'
-
+    expand(){
         this.setState({
-            nodes: newNodes
-        });
+            treeValue: TreeState.expandAll(this.state.treeValue)
+        })
     }
 
     findNodeByKey(nodes, key) {
+        //console.log('find node ', nodes , key)
         let path = key.split('-');
         let node;
         while (path.length) {
@@ -72,36 +63,10 @@ class PcoList extends Component {
         return node;
     }
 
-    inputTextEditor(props, field) {
-        this.rowClassName(props.node)
-        return (
-            <div>
-                <InputText type="text" value={props.node.data[field]} style={{width:'50px'}} //tabIndex={this.state.count}
-                    onChange={(e) => this.onEditorValueChange(props, e.target.value)} />
-                <Button color="primary" size="xs" onClick={this.toggleModal} data-toggle="tooltip" title="Justificativa">
-                    <em className="fa-1x icon-plus xs-1"></em>
-                </Button>    
-            </div>
-        );
-    }
-
-    toggleModal = () => {
-        this.setState({
-            modal: !this.state.modal
-        });
-    }
-
-    //se não for nó do item não deixa aparecer o input para editar
-    valueEditor(props) {
-        let separado = props.node.key.split('-')
-        if (separado.length >= 4) {
-            return this.inputTextEditor(props, props.field);
-        }
-    }
-
     //altera a cor da linha
     rowClassName(node) {
-        let keys = node.key.split('-')
+        //console.log('row node ',node)
+        let keys = node.data.indice.split('-')
         return {
             'bg-gray': (keys.length === 1), 'bg-gray-light': (keys.length === 2), 'bg-gray-lighter': (keys.length === 3),
             'bg-yellow-light': node.data.status === 'alterado', 'bg-success-light':node.data.status==='confirmed', 'bg-danger-light':node.data.status==='rejected'
@@ -109,17 +74,26 @@ class PcoList extends Component {
     }
 
     onRefreshStatus(props, value) {
-        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
-        let editedNode = this.findNodeByKey(newNodes, props.key);
-        editedNode.data.status = value
-        this.setState({
-            nodes: newNodes
-        });
+        //console.log('on refresh ',props, value)
+        this.rowClassName(props)
+        // let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        // let editedNode = this.findNodeByKey(newNodes, props.key);
+        // editedNode.data.status = value
+        // this.setState({
+        //     nodes: newNodes
+        // });
     }
 
     actionTemplate(node, column) {
-        let keys = node.key.split('-')
-        return <div hidden={keys.length<4}  >
+        //console.log('node action',node)
+        //if(node.key!==undefined){
+
+            //let keys = node.key.split('-')
+            //hidden={keys.length<4}
+            let tamanho = node.data.indice.split('-').length;
+        console.log('tamanho',tamanho)
+        if(tamanho>3){
+            return <div   >
             <ButtonGroup>
                 <Button color="success" className="btn-labeled" onClick={() => this.onRefreshStatus(node,'confirmed')} data-toggle="tooltip" title="Aceitar">
                     <span className="btn-md"><i className="fa fa-check"></i></span></Button>
@@ -127,6 +101,9 @@ class PcoList extends Component {
                     <span className="btn-md"><i className="fa fa-times"></i></span></Button>
             </ButtonGroup>
         </div>;
+        }else{
+            return
+        }
     }
 
     changeLanguage = lng => {
@@ -143,8 +120,8 @@ class PcoList extends Component {
         this.setState({ treeValue: newValue });
       }
 
-    renderIndexCell = (row) => {
-        console.log('row index ',row)
+    renderIndexCell = (row, name) => {
+        //console.log('row index e name ',row, name)
         return (
           <div style={{ paddingLeft: (row.metadata.depth * 15) + 'px'}}
             className={row.metadata.hasChildren ? 'with-children' : 'without-children'}>
@@ -154,44 +131,39 @@ class PcoList extends Component {
                 )
               : ''
             }
-            <span>{row.data.grupoccconta}</span>
+            <span>{row.data[name]}</span>
           </div>
         );
     }
     
-    renderItemCell = (row) => {
-        console.log('row index ',row)
+    renderItemCell = (row, name) => {
+        //console.log('row index data name',row.data[name])
         return (
-          <div style={{ paddingLeft: (row.metadata.depth * 15) + 'px'}}>
-            <span>{row.data.item}</span>
+          <div >
+            <span>{row.data[name]}</span>
           </div>
         );
     }
 
-    renderEditableCell = (row) => {
-        console.log('row edit ',row)
-        return (
-          <input type="text" value={row.data.janalt}
-            onChange={(event) => {
-              row.updateData({
-                ...row.data,
-                janalt: event.target.value,
-              });
-            }}/>
-        );
-      }
-  
-    renderEditableCellFev = (row) => {
-        console.log('row edit ',row)
-        return (
-          <input type="text" value={row.data.fevalt}
-            onChange={(event) => {
-              row.updateData({
-                ...row.data,
-                fevalt: event.target.value,
-              });
-            }}/>
-        );
+    renderEditableCell = (row, value) => {
+        console.log('row edittttt '+row.data.indice,row)
+        //se for grupo pai ou itens mostra o input, se não não mostra
+        let tamanho = row.data.indice.split('-').length;
+        console.log('tamanho',tamanho)
+        if(tamanho<2 || tamanho>3){
+            return (
+                <input type="text" value={row.data[value]} disabled={tamanho===1}
+                onChange={(event) => {
+                    console.log('event',event)
+                    row.updateData({
+                        ...row.data,
+                        [value]: event.target.value,
+                    });
+                }}/>
+                );
+        }else{
+            return;
+        }
       }
 
     render() {
@@ -228,55 +200,61 @@ class PcoList extends Component {
                     </ModalFooter>
                 </Modal>
                 {/* <div className="react-grid-Main"> */}
-                <div className="table table-bordered content-section implementation react-grid-Header">
-                <TreeTable value={this.state.treeValue} onChange={this.handleOnChange} >
-                    <TreeTable.Column basis="180px" grow="0"
-                    renderCell={this.renderIndexCell}
-                    renderHeaderCell={() => <span>Grupo / CC / Conta</span>}/>
-                    <TreeTable.Column
-                    renderCell={this.renderItemCell}
-                    renderHeaderCell={() => <span>Item</span>}/>
-                    <TreeTable.Column
-                    renderCell={this.renderEditableCell}
-                    renderHeaderCell={() => <span>{t('titles.janalt')}</span>}/>
-                    <TreeTable.Column
-                    renderCell={this.renderEditableCellFev}
-                    renderHeaderCell={() => <span>{t('titles.febalt')}</span>}/>
+                {/* <div className="table table-bordered content-section implementation react-grid-Header"> */}
+                <TreeTable value={this.state.treeValue} onChange={this.handleOnChange} className="table table-bordered content-section implementation react-grid-Header"
+                    height={620}>
+                    <TreeTable.Column basis="180px" grow="0" renderCell={(e) => this.renderIndexCell(e,'grupoccconta')}
+                        renderHeaderCell={() => <span>Grupo / CC / Conta</span>} style={{width:'100px'}}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'item')} style={{width:'100px'}}
+                        renderHeaderCell={() => <span>{t('titles.item')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'jan')} style={{width:'100px'}}
+                        renderHeaderCell={() => <span>{t('titles.jan')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'janalt')}
+                        renderHeaderCell={() => <span>{t('titles.janalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'fev')}
+                        renderHeaderCell={() => <span>{t('titles.feb')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'fevalt')}
+                        renderHeaderCell={() => <span>{t('titles.febalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'mar')}
+                        renderHeaderCell={() => <span>{t('titles.mar')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'maralt')}
+                        renderHeaderCell={() => <span>{t('titles.maralt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'abr')}
+                        renderHeaderCell={() => <span>{t('titles.apr')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'abralt')}
+                        renderHeaderCell={() => <span>{t('titles.apralt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'mai')}
+                        renderHeaderCell={() => <span>{t('titles.may')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'maialt')}
+                        renderHeaderCell={() => <span>{t('titles.mayalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'jun')}
+                        renderHeaderCell={() => <span>{t('titles.jun')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'junalt')}
+                        renderHeaderCell={() => <span>{t('titles.junalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'ago')}
+                        renderHeaderCell={() => <span>{t('titles.aug')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'agoalt')}
+                        renderHeaderCell={() => <span>{t('titles.augalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'set')}
+                        renderHeaderCell={() => <span>{t('titles.sep')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'setalt')}
+                        renderHeaderCell={() => <span>{t('titles.sepalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'out')}
+                        renderHeaderCell={() => <span>{t('titles.oct')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'outalt')}
+                        renderHeaderCell={() => <span>{t('titles.octalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'nov')}
+                        renderHeaderCell={() => <span>{t('titles.nov')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'novalt')}
+                        renderHeaderCell={() => <span>{t('titles.novalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderItemCell(e,'dez')}
+                        renderHeaderCell={() => <span>{t('titles.dec')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.renderEditableCell(e,'dezalt')}
+                        renderHeaderCell={() => <span>{t('titles.decalt')}</span>}/>
+                    <TreeTable.Column renderCell={(e) => this.actionTemplate(e)}
+                        renderHeaderCell={() => <span>{t('titles.action')}</span>}/>
                 </TreeTable>
-                    
-                    {/* <TreeTable value={this.state.nodes} expandedKeys={this.state.expandedKeys} 
-                    tableClassName="p-treetable p-component " scrollable scrollHeight="700px" scrollWidth="1600px"  
-                        rowClassName={this.rowClassName} 
-                        onToggle={e => this.setState({ expandedKeys: e.value })} responsive >
-                        <Column field="grupoccconta" header="Grupo / CC / Conta" expander style={{ width: '200px' }} />
-                        <Column field="item" header="Item" style={{ width: '70px' }} />
-                        <Column field="jan" header={t('titles.jan')} style={{ width: '70px' }} />
-                        <Column field="janalt" header={t('titles.janalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={1} id={(e)=> console.log('column',e)}/>
-                        <Column field="fev" header={t('titles.feb')} style={{ width: '70px' }} />
-                        <Column field="fevalt" header={t('titles.febalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={2} />
-                        <Column field="mar" header={t('titles.mar')} style={{ width: '70px' }} />
-                        <Column field="maralt" header={t('titles.maralt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={3} />
-                        <Column field="abr" header={t('titles.apr')} style={{ width: '70px' }} />
-                        <Column field="abralt" header={t('titles.apralt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={4} />
-                        <Column field="mai" header={t('titles.may')} style={{ width: '70px' }} />
-                        <Column field="maialt" header={t('titles.mayalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={5} />
-                        <Column field="jun" header={t('titles.jun')} style={{ width: '70px' }} />
-                        <Column field="junalt" header={t('titles.junalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={6} />
-                        <Column field="jul" header={t('titles.jul')} style={{ width: '70px' }} />
-                        <Column field="julalt" header={t('titles.julalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={7} />
-                        <Column field="ago" header={t('titles.aug')} style={{ width: '70px' }} />
-                        <Column field="agoalt" header={t('titles.augalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={8} />
-                        <Column field="set" header={t('titles.sep')} style={{ width: '70px' }} />
-                        <Column field="setalt" header={t('titles.sepalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={9} />
-                        <Column field="out" header={t('titles.oct')} style={{ width: '70px' }} />
-                        <Column field="outalt" header={t('titles.octalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={10} />
-                        <Column field="nov" header={t('titles.nov')} style={{ width: '70px' }} />
-                        <Column field="novalt" header={t('titles.novalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={11} />
-                        <Column field="dez" header={t('titles.dec')} style={{ width: '70px' }} />
-                        <Column field="dezalt" header={t('titles.decalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={12} />
-                        <Column body={(e) => this.actionTemplate(e)} style={{ textAlign: 'center', width: '8em' }} tabIndex={13}/>
-                    </TreeTable> */}
-                </div>
+                {/* </div> */}
             </div>
         )
     }

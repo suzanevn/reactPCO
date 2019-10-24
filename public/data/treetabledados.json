@@ -5,6 +5,7 @@
             "key": "0",
             "expanded": true,
             "data":{
+                "indice": "0",
                 "grupoccconta":"Grupo1",
                 "item":"",
                 "jan":300,
@@ -36,18 +37,21 @@
                 {  
                     "key": "0-0",
                     "data":{
+                        "indice": "0-0",
                         "grupoccconta":"CTR001"
                     },
                     "children":[  
                         {  
                             "key": "0-0-0",
                             "data":{
+                                "indice": "0-0-0",
                                 "grupoccconta":"C1010"
                             },
                             "children":[  
                                 {  
                                     "key": "0-0-0-0",
                                     "data":{  
+                                        "indice": "0-0-0-0",
                                         "grupoccconta":"",
                                         "item":"Item1",
                                         "jan":3,
@@ -81,6 +85,7 @@
                                 {  
                                     "key": "0-0-0-1",
                                     "data":{  
+                                        "indice": "0-0-0-1",
                                         "grupoccconta":"",
                                         "item":"Item2",
                                         "jan":50,
@@ -122,6 +127,7 @@
             "key": "1",
             "expanded": true,
             "data":{  
+                "indice": "1",
                 "grupoccconta":"Grupo2",
                 "item":"",
                 "jan":95,
@@ -153,18 +159,21 @@
                 {  
                     "key": "1-0",
                     "data":{
+                        "indice": "1-0",
                         "grupoccconta":"CTR002"
                     },
                     "children":[  
                         {  
                             "key": "1-0-0",
                             "data":{
+                                "indice": "1-0-0",
                                 "grupoccconta":"C2020"
                             },
                             "children":[  
                                 {  
                                     "key": "1-0-0-0",
                                     "data":{  
+                                        "indice": "1-0-0-0",
                                         "grupoccconta":"",
                                         "item":"Item1",
                                         "jan":25,
@@ -198,6 +207,7 @@
                                 {  
                                     "key": "1-0-0-1",
                                     "data":{  
+                                        "indice": "1-0-0-1",
                                         "grupoccconta":"",
                                         "item":"Item2",
                                         "jan":15,
@@ -239,6 +249,7 @@
             "key": "2",
             "expanded": true,
             "data":{  
+                "indice": "2",
                 "grupoccconta":"Grupo3",
                 "item":"",
                 "jan":95,
@@ -270,18 +281,21 @@
                 {  
                     "key": "2-0",
                     "data":{
+                        "indice": "2-0",
                         "grupoccconta":"CTR003"
                     },
                     "children":[  
                         {  
                             "key": "2-0-0",
                             "data":{
+                                "indice": "2-0-0",
                                 "grupoccconta":"C3030"
                             },
                             "children":[  
                                 {  
                                     "key": "2-0-0-0",
                                     "data":{  
+                                        "indice": "2-0-0-0",
                                         "grupoccconta":"",
                                         "item":"Item1",
                                         "jan":25,
@@ -315,6 +329,7 @@
                                 {  
                                     "key": "2-0-0-1",
                                     "data":{  
+                                        "indice": "2-0-0-1",
                                         "grupoccconta":"",
                                         "item":"Item2",
                                         "jan":15,
@@ -356,6 +371,7 @@
             "key": "3",
             "expanded": true,
             "data":{  
+                "indice": "3",
                 "grupoccconta":"Grupo4",
                 "item":"",
                 "jan":95,
@@ -387,18 +403,21 @@
                 {  
                     "key": "3-0",
                     "data":{
+                        "indice": "3-0",
                         "grupoccconta":"CTR004"
                     },
                     "children":[  
                         {  
                             "key": "3-0-0",
                             "data":{
+                                "indice": "3-0-0",
                                 "grupoccconta":"C2020"
                             },
                             "children":[  
                                 {  
                                     "key": "3-0-0-0",
                                     "data":{  
+                                        "indice": "3-0-0-0",
                                         "grupoccconta":"",
                                         "item":"Item1",
                                         "jan":25,
@@ -432,6 +451,7 @@
                                 {  
                                     "key": "3-0-0-1",
                                     "data":{  
+                                        "indice": "3-0-0-1",
                                         "grupoccconta":"",
                                         "item":"Item2",
                                         "jan":15,
@@ -473,6 +493,7 @@
             "key": "4",
             "expanded": true,
             "data":{  
+                "indice": "4",
                 "grupoccconta":"Grupo5",
                 "item":"",
                 "jan":95,
@@ -504,18 +525,21 @@
                 {  
                     "key": "4-0",
                     "data":{
+                        "indice": "4-0",
                         "grupoccconta":"CTR005"
                     },
                     "children":[  
                         {  
                             "key": "4-0-0",
                             "data":{
+                                "indice": "4-0-0",
                                 "grupoccconta":"C2020"
                             },
                             "children":[  
                                 {  
                                     "key": "4-0-0-0",
                                     "data":{  
+                                        "indice": "4-0-0-0",
                                         "grupoccconta":"",
                                         "item":"Item1",
                                         "jan":25,
@@ -549,6 +573,7 @@
                                 {  
                                     "key": "4-0-0-1",
                                     "data":{  
+                                        "indice": "4-0-0-1",
                                         "grupoccconta":"",
                                         "item":"Item2",
                                         "jan":15,
