@@ -32,7 +32,8 @@
     "name":"Nome",
     "year":"Ano",
     "status":"Status",
-    "action":"A\u00E7\u00F5es"
+    "action":"A\u00E7\u00F5es",
+    "item":"Item"
   },
   "dashboard": {
     "WELCOME": "Bienvenido a Angle"

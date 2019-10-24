@@ -16,7 +16,7 @@
     "jul": "Jul",
     "julalt": "Jul Alt",
     "aug": "Aug",
-    "augalt": "Aut Alt",
+    "augalt": "Aug Alt",
     "sep": "Sep",
     "sepalt": "Sep Alt",
     "oct": "Oct",
@@ -32,7 +32,8 @@
     "name":"Name",
     "year":"Year",
     "status":"Status",
-    "action":"Action"
+    "action":"Action",
+    "item":"Item"
   },
   "dashboard": {
     "WELCOME": "Welcome to Angle !"
