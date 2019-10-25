@@ -18,7 +18,10 @@ class PcoList extends Component {
             dropdownOpen: false,
             modal: false,
             nodesSemFormat: [],
-            nodesFormat: []
+            nodesFormat: [],
+            justification:'',
+            fieldJustification:'',
+            rowEdit: []
         };
         this.nodeservice = new NodeService();
 
@@ -27,6 +30,7 @@ class PcoList extends Component {
         this.onRefreshStatus = this.onRefreshStatus.bind(this);
         this.criarSubPasta = this.criarSubPasta.bind(this);
         this.renderEditableCell = this.renderEditableCell.bind(this);
+        this.changeJustification = this.changeJustification.bind(this);
     }
 
     forJson(){
@@ -146,39 +150,26 @@ class PcoList extends Component {
         this.setState({ expandedKeys: expandedKeys });
     }
 
-    onEditorValueChange(props, value) {
-        console.log('on editor ', props,value)
-        let valueAnt = props.data[props.field];
-        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
-        //busca o no pai e altera o total
-        let noPai = this.findNodeByKey(newNodes, props.key.split('-')[0])
-        noPai.data[props.field] = noPai.data[props.field] - parseInt(valueAnt, 10) + parseInt(value, 10)
-console.log('no pai ', noPai)
-        //busca o no atual e seta o novo valor e altera o status
-        let editedNode = this.findNodeByKey(newNodes, props.key);
-        console.log('edited node', editedNode)
-        editedNode.data[props.field] = value;
-        editedNode.data.status = 'alterado'
-        console.log('apos edited node', editedNode)
-
-        this.setState({
-            nodes: newNodes
-        });
-    }
-
     //antigo
     onEditorValueChange2(props, value) {
+        // console.log('valueeeeeeee',value)
+        value = value!==null && value!==''?value:0
         let valueAnt = props.node.data[props.field];
         let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        // console.log('new nodes antes', newNodes)
         //busca o no pai e altera o total
         let noPai = this.findNodeByKey(newNodes, props.node.key.split('-')[0])
+        // console.log('no pai ', noPai)
         noPai.data[props.field] = noPai.data[props.field] - parseInt(valueAnt, 10) + parseInt(value, 10)
 
         //busca o no atual e seta o novo valor e altera o status
         let editedNode = this.findNodeByKey(newNodes, props.node.key);
+        // console.log('edited node', editedNode)
         editedNode.data[props.field] = value;
         editedNode.data.status = 'alterado'
-
+        // console.log('apos edited node', editedNode)
+        // console.log('nodes ', this.state.nodes)
+        // console.log('new nodes ', this.state.newNodes)
         this.setState({
             nodes: newNodes
         });
@@ -196,10 +187,11 @@ console.log('no pai ', noPai)
     }
 
     inputTextEditor(props, field) {
+         console.log('props editable **********',props)
         this.rowClassName(props.node)
         return (
             <div>
-                <InputText type="text" value={props.node.data[field]} style={{width:'50px'}} //tabIndex={this.state.count}
+                <InputText type="text" value={props.node.data[field]} style={{width:'50px'}}
                     onChange={(e) => this.onEditorValueChange2(props, e.target.value)} />
                 <Button color="primary" size="xs" onClick={this.toggleModal} data-toggle="tooltip" title="Justificativa">
                     <em className="fa-1x icon-plus xs-1"></em>
@@ -208,37 +200,84 @@ console.log('no pai ', noPai)
         );
     }
 
-    toggleModal = () => {
+    toggleModal = (e, field) => {
+        let jusfield='';
+        if(field!==undefined){
+            let fieldsplit = field.split('');
+            jusfield='jus'+fieldsplit[0]+fieldsplit[1]+fieldsplit[2]
+        }
+        //monta o nome do campo justificativa
         this.setState({
+            modal: !this.state.modal,
+            justification: e.data!==undefined&&jusfield!==''?e.data[jusfield]:'',
+            rowEdit: e.data,
+            fieldJustification:jusfield
+        }, ()=>this.nada);
+    }
+    nada(){
+
+    }
+    
+    toggleModalSave = () => {
+        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        let nodeporkey = this.findNodeByKey(newNodes, this.state.rowEdit.indice)
+        nodeporkey.data[this.state.fieldJustification]=this.state.justification
+        this.setState({
+            nodes: newNodes,
             modal: !this.state.modal
         });
     }
 
     //se não for nó do item não deixa aparecer o input para editar
     valueEditor(props) {
-        console.log('props value editor', props)
+        //console.log('props do antigo', props)
         let separado = props.node.key.split('-')
         if (separado.length >= 4) {
             return this.inputTextEditor(props, props.field);
         }
     }
 
+    onEditorValueChange(row, value) {
+        // console.log('on editor ', row,value)
+        value = value!==null && value!==''?value:0
+        let valueAnt = row.data[row.field];
+        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        // console.log('new nodes antes', newNodes)
+        //busca o no pai e altera o total
+        let noPai = this.findNodeByKey(newNodes, row.key.split('-')[0])
+        // console.log('new nodes ', this.state.newNodes)
+        noPai.data[row.field] = noPai.data[row.field] - parseInt(valueAnt, 10) + parseInt(value, 10)
+        // console.log('no pai ', noPai)
+        //busca o no atual e seta o novo valor e altera o status
+        let editedNode = this.findNodeByKey(newNodes, row.key);
+        // console.log('edited node', editedNode)
+        editedNode.data[row.field] = value;
+        editedNode.data.status = 'alterado'
+        // console.log('apos edited node', editedNode)
+        // console.log('nodes ', this.state.nodes)
+        // console.log('new nodes ', this.state.newNodes)
+        this.setState({
+            nodes: newNodes
+        });
+    }
+
     renderEditableCell = (row,field) => {
-        //console.log('row teste **********',row)
+        // console.log('row editable **********',row)
         //se for grupo pai ou itens mostra o input, se não não mostra
+       // console.log('props do novo', row)
         let tamanho = row.data.indice.split('-').length;
         //console.log('tamanho',tamanho)
         if(tamanho<2 || tamanho>3){
             return (
-                <div>
-                    <InputText type="text" value={row.data[field]} style={{width:'50px'}} disabled={tamanho===1} //tabIndex={this.state.count}
+                <ButtonGroup>
+                    <input type="text" value={row.data[field]} style={{width:'40px'}} disabled={tamanho===1} //tabIndex={this.state.count}
                         onChange={(e) => this.onEditorValueChange(row, e.target.value)}>
-                    </InputText>
-                    <Button color="primary" size="xs" onClick={this.toggleModal} data-toggle="tooltip" title="Justificativa" hidden={tamanho===1}
-                    tabIndex={-1}>
-                        <em className="fa-1x icon-plus xs-1"></em>
+                    </input>
+                    <Button color="primary" size="xs" onClick={()=>this.toggleModal(row,field)} data-toggle="tooltip" title="Justificativa" hidden={tamanho===1}
+                    tabIndex={-1} style={{width:'22px'}}>
+                        <em className="fa-1x icon-plus xs-1" ></em>
                     </Button>      
-                </div>
+                </ButtonGroup>
                 // <input type="text" value={row.data[value]} disabled={tamanho===1} style={{width:'25px'}}
                 // onChange={(e) => this.onEditorValueChange(row, e.target.value)}/>
                 );
@@ -287,6 +326,12 @@ console.log('no pai ', noPai)
         });
     }
 
+    changeJustification(value){
+        console.log('value**************', value)
+        console.log('justifi**************', this.state.justification)
+        console.log('justifi**************', this.state.rowEdit)
+    }
+
     render() {
         // let style={backgroundColor:'#ffffb3'}
         const {t}= this.props;
@@ -312,11 +357,11 @@ console.log('no pai ', noPai)
                     <ModalHeader toggle={this.toggleModal}><Trans i18nKey='titles.justification'></Trans></ModalHeader>
                     <ModalBody>
                         <Card body>
-                            <textarea rows="6" className="form-control note-editor"></textarea>
+                            <textarea rows="6" className="form-control note-editor" value={this.state.justification} onChange={(e)=>this.setState({justification: e.target.value})}></textarea>
                         </Card>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.toggleModal}>Do Something</Button>{' '}
+                        <Button color="primary" onClick={this.toggleModalSave}>Save</Button>{' '}
                         <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -330,29 +375,29 @@ console.log('no pai ', noPai)
                         <Column field="grupoccconta" header="Grupo / CC / Conta" expander style={{ width: '200px' }} />
                         <Column field="item" header="Item" style={{ width: '70px' }} />
                         <Column field="jan" header={t('titles.jan')} style={{ width: '70px' }} />
-                        <Column field="janalt" header={t('titles.janalt')} body={(e) => this.renderEditableCell(e,'janalt')} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={1} id={(e)=> console.log('column',e)}/>
+                        <Column field="janalt" header={t('titles.janalt')} body={(e) => this.renderEditableCell(e,'janalt')} style={{ width: '70px' }} tabIndex={1} id={(e)=> console.log('column',e)}/>
                         <Column field="fev" header={t('titles.feb')} style={{ width: '70px' }} />
-                        <Column field="fevalt" header={t('titles.febalt')} body={(e) => this.renderEditableCell(e,'fevalt')} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={2} />
+                        <Column field="fevalt" header={t('titles.febalt')} body={(e) => this.renderEditableCell(e,'fevalt')} style={{ width: '70px' }} tabIndex={2} />
                         <Column field="mar" header={t('titles.mar')} style={{ width: '70px' }} />
-                        <Column field="maralt" header={t('titles.maralt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={3} />
+                        <Column field="maralt" header={t('titles.maralt')} body={(e) => this.renderEditableCell(e,'maralt')} style={{ width: '70px' }} tabIndex={3} />
                         <Column field="abr" header={t('titles.apr')} style={{ width: '70px' }} />
-                        <Column field="abralt" header={t('titles.apralt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={4} />
+                        <Column field="abralt" header={t('titles.apralt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={4} />
                         <Column field="mai" header={t('titles.may')} style={{ width: '70px' }} />
-                        <Column field="maialt" header={t('titles.mayalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={5} />
+                        <Column field="maialt" header={t('titles.mayalt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={5} />
                         <Column field="jun" header={t('titles.jun')} style={{ width: '70px' }} />
-                        <Column field="junalt" header={t('titles.junalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={6} />
+                        <Column field="junalt" header={t('titles.junalt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={6} />
                         <Column field="jul" header={t('titles.jul')} style={{ width: '70px' }} />
-                        <Column field="julalt" header={t('titles.julalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={7} />
+                        <Column field="julalt" header={t('titles.julalt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={7} />
                         <Column field="ago" header={t('titles.aug')} style={{ width: '70px' }} />
-                        <Column field="agoalt" header={t('titles.augalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={8} />
+                        <Column field="agoalt" header={t('titles.augalt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={8} />
                         <Column field="set" header={t('titles.sep')} style={{ width: '70px' }} />
-                        <Column field="setalt" header={t('titles.sepalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={9} />
+                        <Column field="setalt" header={t('titles.sepalt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={9} />
                         <Column field="out" header={t('titles.oct')} style={{ width: '70px' }} />
-                        <Column field="outalt" header={t('titles.octalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={10} />
+                        <Column field="outalt" header={t('titles.octalt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={10} />
                         <Column field="nov" header={t('titles.nov')} style={{ width: '70px' }} />
-                        <Column field="novalt" header={t('titles.novalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={11} />
+                        <Column field="novalt" header={t('titles.novalt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={11} />
                         <Column field="dez" header={t('titles.dec')} style={{ width: '70px' }} />
-                        <Column field="dezalt" header={t('titles.decalt')} editor={this.valueEditor} style={{ width: '70px', border:'solid', borderColor: 'white' }} tabIndex={12} />
+                        <Column field="dezalt" header={t('titles.decalt')} editor={this.valueEditor} style={{ width: '70px' }} tabIndex={12} />
                         <Column body={(e) => this.actionTemplate(e)} style={{ textAlign: 'center', width: '8em' }} tabIndex={13}/>
                     </TreeTable>
                 </div>
