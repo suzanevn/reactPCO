@@ -268,7 +268,11 @@ class PcoList extends Component {
        // console.log('props do novo', row)
         let tamanho = row.data.indice.split('-').length;
         //console.log('tamanho',tamanho)
-        if(tamanho<2 || tamanho>3){
+        if(tamanho<2){
+            return (
+                <InputText type="text" value={row.data[field]} style={{width:'40px'}} disabled={true} />
+                );
+        }else if(tamanho>3){
             return (
                 <ButtonGroup>
                     <InputText type="text" defaultValue={row.data[field]} style={{width:'40px'}}  //tabIndex={this.state.count}
