@@ -33,7 +33,8 @@
     "year":"Ano",
     "status":"Status",
     "action":"A\u00E7\u00F5es",
-    "item":"Item"
+    "item":"Item",
+    "header":"Grupo / CC / Conta"
   },
   "dashboard": {
     "WELCOME": "Bienvenido a Angle"

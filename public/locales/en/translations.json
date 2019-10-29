@@ -33,7 +33,8 @@
     "year":"Year",
     "status":"Status",
     "action":"Action",
-    "item":"Item"
+    "item":"Item",
+    "header":"Group / CC / Account"
   },
   "dashboard": {
     "WELCOME": "Welcome to Angle !"

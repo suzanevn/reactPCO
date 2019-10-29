@@ -6,13 +6,13 @@ import { Column } from "primereact/column";
 import { Button, ButtonGroup, Modal, ModalHeader, ModalBody, ModalFooter, Card,
          Dropdown, DropdownToggle,  DropdownMenu, DropdownItem } from 'reactstrap';
 import { translate, Trans } from 'react-i18next';
+import './input.css'
 
 class PcoList extends Component {
     constructor(props, context) {
         super(props, context);
 
         this.state = {
-            count: 0,
             nodes: [],
             expandedKeys: {},
             dropdownOpen: false,
@@ -25,12 +25,10 @@ class PcoList extends Component {
         };
         this.nodeservice = new NodeService();
 
-        this.valueEditor = this.valueEditor.bind(this);
         this.rowClassName = this.rowClassName.bind(this);
         this.onRefreshStatus = this.onRefreshStatus.bind(this);
-        this.criarSubPasta = this.criarSubPasta.bind(this);
         this.renderEditableCell = this.renderEditableCell.bind(this);
-        this.changeJustification = this.changeJustification.bind(this);
+        this.criarSubPasta = this.criarSubPasta.bind(this);
     }
 
     forJson(){
@@ -38,6 +36,7 @@ class PcoList extends Component {
         console.log('nodes atual ',this.state.nodes)
         let noarray = this.state.nodesSemFormat
         //let ccant='';
+        let grupoant='';
         //let novoarray = [];
         // for(let i=0; i<noarray.length;i++){
        
@@ -50,8 +49,10 @@ class PcoList extends Component {
         //let i=0;
         //noarray.forEach((e)=> {
         for(let i=0;i<noarray.length;i++){
-            //if(noarray[i].cc==='' || noarray[i].cc===ccant){
-                myMap.set("cc", noarray[i].cc);
+            //se o grupo não for o mesmo do anterior, cria um novo
+            if(noarray[i].grupo!==grupoant){
+                console.log('if grupoant', grupoant)
+                myMap.set("cc", noarray[i].grupo);
                 jsonarray.push({
                     key: noarray[i].grupo,
                     expanded: true,
@@ -88,6 +89,47 @@ class PcoList extends Component {
                     ],
                     cc: noarray[i].cc,
                 });
+                grupoant=noarray[i].grupo
+            }else{
+                console.log('else')
+                //busca nó do grupo e seta o resto como filho
+                console.log('json array ',jsonarray)
+                let newNodes = JSON.parse(JSON.stringify(jsonarray));
+                let nodeporkey = this.findNodeByKey(newNodes, "Grupo1")
+                console.log('key, new nodes, nodepor key ',noarray[i].grupo,newNodes,nodeporkey)
+                console.log('group 1 ',newNodes.Group1)
+                // newNodes[0].push({
+                //     children:[  
+                //         {  
+                //             key: noarray[i].grupo+"-"+noarray[i].cc,
+                //             expanded: true,
+                //             data:{
+                //                 grupoccconta:noarray[i].cc
+                //             },
+                //             children:[  
+                //                 {  
+                //                     key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta,
+                //                     expanded: true,
+                //                     data:{
+                //                         grupoccconta:noarray[i].conta
+                //                     },
+                //                     children:[  
+                //                         {  
+                //                             key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta+"-"+noarray[i].item,
+                //                             expanded: true,
+                //                             data:{  
+                //                                 grupoccconta:"",
+                //                                 item:noarray[i].item
+                //                             }
+                //                         }
+                //                     ]
+                //                 }
+                //             ]
+                //         }
+                //     ],
+                //     cc: noarray[i].cc,
+                // });
+            }
         }
 
         console.log("json resp ", jsonarray)
@@ -123,12 +165,10 @@ class PcoList extends Component {
         });
       }
 
-
     componentDidMount() {
         this.nodeservice.getTreeTableNodes().then(data => this.setState({ nodes: data }));
-        //this.nodeservice.convertJson().then(data => this.setState({ nodesSemFormat: data }, () => this.forJson()));
+        this.nodeservice.convertJson().then(data => this.setState({ nodesSemFormat: data }, () => this.forJson()));
         //this.nodeservice.getPlanilhas().then(data => console.log('data', data));
-        //console.log('node ',this.nodeservice)
 
         let expandedKeys = { ...this.state.expandedKeys };
         //expande as colunas
@@ -150,74 +190,36 @@ class PcoList extends Component {
         this.setState({ expandedKeys: expandedKeys });
     }
 
-    //antigo
-    onEditorValueChange2(props, value) {
-        // console.log('valueeeeeeee',value)
-        value = value!==null && value!==''?value:0
-        let valueAnt = props.node.data[props.field];
-        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
-        // console.log('new nodes antes', newNodes)
-        //busca o no pai e altera o total
-        let noPai = this.findNodeByKey(newNodes, props.node.key.split('-')[0])
-        // console.log('no pai ', noPai)
-        noPai.data[props.field] = noPai.data[props.field] - parseInt(valueAnt, 10) + parseInt(value, 10)
-
-        //busca o no atual e seta o novo valor e altera o status
-        let editedNode = this.findNodeByKey(newNodes, props.node.key);
-        // console.log('edited node', editedNode)
-        editedNode.data[props.field] = value;
-        editedNode.data.status = 'alterado'
-        // console.log('apos edited node', editedNode)
-        // console.log('nodes ', this.state.nodes)
-        // console.log('new nodes ', this.state.newNodes)
-        this.setState({
-            nodes: newNodes
-        });
-    }
-
     findNodeByKey(nodes, key) {
+        console.log('findNodeByKey', nodes,key)
         let path = key.split('-');
         let node;
+        console.log('split', path)
         while (path.length) {
             let list = node ? node.children : nodes;
             node = list[parseInt(path[0], 10)];
+            console.log('node while ',node)
             path.shift();
         }
         return node;
     }
 
-    inputTextEditor(props, field) {
-        // console.log('props editable **********',props)
-        this.rowClassName(props.node)
-        return (
-            <div>
-                <InputText type="text" value={props.node.data[field]} style={{width:'50px'}}
-                    onChange={(e) => this.onEditorValueChange2(props, e.target.value)} />
-                <Button color="primary" size="xs" onClick={this.toggleModal} data-toggle="tooltip" title="Justificativa">
-                    <em className="fa-1x icon-plus xs-1"></em>
-                </Button>    
-            </div>
-        );
-    }
-
     toggleModal = (e, field) => {
         let jusfield='';
+        //monta o nome do campo justificativa
         if(field!==undefined){
             let fieldsplit = field.split('');
             jusfield='jus'+fieldsplit[0]+fieldsplit[1]+fieldsplit[2]
         }
-        //monta o nome do campo justificativa
         this.setState({
             modal: !this.state.modal,
             justification: e.data!==undefined&&jusfield!==''?e.data[jusfield]:'',
             rowEdit: e.data,
             fieldJustification:jusfield
-        }, ()=>this.nada);
-    }
-    nada(){
-
+        });
     }
     
+    //salvar da modal de justificativa
     toggleModalSave = () => {
         let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
         let nodeporkey = this.findNodeByKey(newNodes, this.state.rowEdit.indice)
@@ -228,68 +230,50 @@ class PcoList extends Component {
         });
     }
 
-    //se não for nó do item não deixa aparecer o input para editar
-    valueEditor(props) {
-        //console.log('props do antigo', props)
-        let separado = props.node.key.split('-')
-        if (separado.length >= 4) {
-            return this.inputTextEditor(props, props.field);
+    //busca o nó a ser alterado, seta o novo valor e atualiza o total
+    onEditorValueChange(row, value, field) {
+        value = value !== null && value !== '' ? value : 0
+        let valueAnt = row.data[field];
+        if(parseInt(value, 10)!==parseInt(valueAnt, 10)){
+            let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+            //busca o no pai e altera o total
+            let noPai = this.findNodeByKey(newNodes, row.key.split('-')[0])
+            noPai.data[field] = noPai.data[field] - parseInt(valueAnt, 10) + parseInt(value, 10)
+            //busca o no atual e seta o novo valor e altera o status
+            let editedNode = this.findNodeByKey(newNodes, row.key);
+            editedNode.data[field] = value;
+            editedNode.data.status = 'alterado'
+            this.setState({
+                nodes: newNodes
+            });
         }
     }
 
-    onEditorValueChange(row, value,field) {
-         console.log('on editor ', row,value)
-         console.log('row field ', field)
-         value = value!==null && value!==''?value:0
-        let valueAnt = row.data[field];
-        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
-         console.log('new nodes antes', newNodes)
-        //busca o no pai e altera o total
-        let noPai = this.findNodeByKey(newNodes, row.key.split('-')[0])
-        // console.log('new nodes ', this.state.newNodes)
-        noPai.data[field] = noPai.data[field] - parseInt(valueAnt, 10) + parseInt(value, 10)
-         console.log('no pai ', noPai)
-        //busca o no atual e seta o novo valor e altera o status
-        let editedNode = this.findNodeByKey(newNodes, row.key);
-         console.log('edited node', editedNode)
-        editedNode.data[field] = value;
-        editedNode.data.status = 'alterado'
-         console.log('apos edited node', editedNode)
-         console.log('nodes ', this.state.nodes)
-         console.log('new nodes ', this.state.newNodes)
-        this.setState({
-            nodes: newNodes
-        });
-    }
-
-    renderEditableCell = (row,field) => {
-        // console.log('row editable **********',row)
-        //se for grupo pai ou itens mostra o input, se não não mostra
-       // console.log('props do novo', row)
+    //monta o campo edit em cada celula
+    renderEditableCell = (row, field) => {
         let tamanho = row.data.indice.split('-').length;
-        //console.log('tamanho',tamanho)
-        if(tamanho<2){
+        //se for nó pai mostra só o input com o total
+        if (tamanho < 2) {
             return (
-                <InputText type="text" value={row.data[field]} style={{width:'40px'}} disabled={true} />
-                );
-        }else if(tamanho>3){
+                <InputText type="text" value={row.data[field]} style={{ width: '40px' }} disabled={true} />
+            );
+        //se for os itens mostra o input para edicao e o botao para justificativa    
+        } else if (tamanho > 3) {
             return (
                 <ButtonGroup>
-                    <InputText type="text" defaultValue={row.data[field]} style={{width:'40px'}} 
+                    <InputText type='number' defaultValue={row.data[field]} style={{ width: '40px' }}
                         onBlur={(e) => this.onEditorValueChange(row, e.target.value, field)}>
                     </InputText>
-                    <Button color="primary" size="xs" onClick={()=>this.toggleModal(row,field)} data-toggle="tooltip" title="Justificativa" hidden={tamanho===1}
-                    tabIndex={-1} style={{width:'22px'}}>
+                    <Button color="primary" size="xs" onClick={() => this.toggleModal(row, field)} data-toggle="tooltip" title="Justificativa" hidden={tamanho === 1}
+                        tabIndex={-1} style={{ width: '22px' }}>
                         <em className="fa-1x icon-plus xs-1" ></em>
-                    </Button>      
+                    </Button>
                 </ButtonGroup>
-                // <input type="text" value={row.data[value]} disabled={tamanho===1} style={{width:'25px'}}
-                // onChange={(e) => this.onEditorValueChange(row, e.target.value)}/>
-                );
-        }else{
+            );
+        } else {
             return;
         }
-      }
+    }
 
     //altera a cor da linha
     rowClassName(node) {
@@ -300,6 +284,7 @@ class PcoList extends Component {
         }
     }
 
+    //altera a cor da linha para verde(confirmado) ou vermelho(rejeitado)
     onRefreshStatus(props, value) {
         let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
         let editedNode = this.findNodeByKey(newNodes, props.key);
@@ -309,7 +294,8 @@ class PcoList extends Component {
         });
     }
 
-    actionTemplate(node, column) {
+    //monta os botoes da ultima coluna
+    actionTemplate(node) {
         let keys = node.key.split('-')
         return <div hidden={keys.length<4}  >
             <ButtonGroup>
@@ -329,12 +315,6 @@ class PcoList extends Component {
         this.setState({
             dropdownOpen: !this.state.dropdownOpen
         });
-    }
-
-    changeJustification(value){
-        console.log('value**************', value)
-        console.log('justifi**************', this.state.justification)
-        console.log('justifi**************', this.state.rowEdit)
     }
 
     render() {
@@ -370,15 +350,12 @@ class PcoList extends Component {
                         <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
-                {/* <div className="react-grid-Main"> */}
                 <div className="table table-bordered content-section implementation react-grid-Header">
                     <TreeTable value={this.state.nodes} expandedKeys={this.state.expandedKeys} 
-                    tableClassName="p-treetable p-component " scrollable scrollHeight="700px" scrollWidth="1600px"  
-                    // tableClassName="table bg-gray-dark"
-                        rowClassName={this.rowClassName} 
-                        onToggle={e => this.setState({ expandedKeys: e.value })} responsive >
-                        <Column field="grupoccconta" header="Grupo / CC / Conta" expander style={{ width: '200px' }} />
-                        <Column field="item" header="Item" style={{ width: '70px' }} />
+                        tableClassName="p-treetable p-component " scrollable scrollHeight="700px" scrollWidth="1600px"  
+                        rowClassName={this.rowClassName} onToggle={e => this.setState({ expandedKeys: e.value })} responsive >
+                        <Column field="grupoccconta" header={t('titles.header')} expander style={{ width: '200px' }} />
+                        <Column field="item" header={t('titles.item')} style={{ width: '70px' }} />
                         <Column field="jan" header={t('titles.jan')} style={{ width: '70px' }} />
                         <Column field="janalt" header={t('titles.janalt')} body={(e) => this.renderEditableCell(e,'janalt')} style={{ width: '70px' }} />
                         <Column field="fev" header={t('titles.feb')} style={{ width: '70px' }} />
