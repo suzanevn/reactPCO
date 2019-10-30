@@ -21,121 +21,223 @@ class PcoList extends Component {
             nodesFormat: [],
             justification:'',
             fieldJustification:'',
-            rowEdit: []
+            rowEdit: [],
+            dadosreais: []
         };
         this.nodeservice = new NodeService();
 
         this.rowClassName = this.rowClassName.bind(this);
         this.onRefreshStatus = this.onRefreshStatus.bind(this);
         this.renderEditableCell = this.renderEditableCell.bind(this);
-        this.criarSubPasta = this.criarSubPasta.bind(this);
+        // this.criarSubPasta = this.criarSubPasta.bind(this);
+        //this.findAllChildren = this.findAllChildren.bind(this);
     }
 
+ /*   findAllChildren (id, results, depth) {
+        let data = [{
+            "id": 1,
+            "parent": 0,
+            "name": "Parent"
+          }, {
+            "id": 2,
+            "parent": 1,
+            "name": "Child 1"
+          }, {
+            "id": 3,
+            "parent": 2,
+            "name": "Grand Child 1"
+          }, {
+            "id": 4,
+            "parent": 2,
+            "name": "Grand Child 2"
+          }, {
+            "id": 5,
+            "parent": 1,
+            "name": "Child 2"
+          }]
+
+        for (let d=0; d in data; d++) {
+            if (data[d].parent === id) {
+                data[d].depth = depth
+                results.push(data[d])
+                this.findAllChildren(data[d].id, results, depth + 1)
+            }
+            //console.log('d',d)
+            //console.log('results ',results)
+        }
+    }
+    
+    findAllChildrenTeste (grupoccconta, results, depth) {
+        let nodestate = this.state.dadosreais
+        //console.log('nodes state ',nodestate)
+        for (let d=0; d in nodestate ; d++) {
+            if (nodestate[d].GRUPO === grupoccconta) {
+                nodestate[d].depth = depth
+                results.push(nodestate[d])
+                this.findAllChildren(nodestate[d].GRUPO, results, depth + 1)
+            }
+        }
+    }
+    
+    findAllChildrenCC (grupoccconta, results, depth) {
+        let nodestate = this.state.dadosreais
+        //console.log('nodes state ',nodestate)
+        for (let d=0; d in nodestate ; d++) {
+            if (nodestate[d].AK2_CO === grupoccconta) {
+                nodestate[d].depth = depth
+                results.push(nodestate[d])
+                this.findAllChildren(nodestate[d].AK2_CO, results, depth + 1)
+            }
+        }
+    }
+    
+    findAllChildrenNovo (id, results, depth, field) {
+        console.log('field depth ',field, depth)
+        let nodestate = this.state.dadosreais
+        for (let d=0; d in nodestate; d++) {
+            if (nodestate[d][field] === id) {
+                nodestate[d].depth = depth
+                results.push(nodestate[d])
+                this.findAllChildrenNovo(nodestate[d][field], results, depth+1, 'AK2_CO')
+            }
+            //console.log('d',d)
+            //console.log('results ',results)
+        }
+    }*/
+
+    findAllChildrenNovo (id, results, field) {
+        let nodestate = this.state.dadosreais
+        for (let d=0; d in nodestate; d++) {
+            if (nodestate[d][field] === id) {
+                nodestate[d].AK2_PERIOD = nodestate[d].AK2_PERIOD.substring(4, 6);
+                results.push(nodestate[d])
+            }
+            //console.log('d',d)
+            //console.log('results ',results)
+        }
+    }
+    
     forJson(){
-        console.log('sem formato ',this.state.nodesSemFormat)
-        console.log('nodes atual ',this.state.nodes)
-        let noarray = this.state.nodesSemFormat
+        // var results = []
+        // this.findAllChildren(0, results, 0)
+        // console.log('resp final ',results)
+        
+        var resultsTotal = []
+        let grupo=[]
+        var resultsConta = []
+        let contacontabil=''
+        let centrocusto=''
+        //console.log('dados reais ',this.state.dadosreais)
+        for(let i=0;i<this.state.dadosreais.length;i++){
+            //ver se da certo validar os 3, grupo conta e cc
+            if(contacontabil!==this.state.dadosreais[i].AK2_CO){
+                contacontabil = this.state.dadosreais[i].AK2_CO
+                resultsConta=[]
+                //console.log('conta grupo',contacontabil, this.state.dadosreais[i].GRUPO)
+                this.findAllChildrenNovo(contacontabil, resultsConta, 'AK2_CO')
+                //console.log('resp final Conta ',resultsConta)
+                resultsTotal.push(resultsConta)
+
+           /* if(grupo!==this.state.dadosreais[i].GRUPO){
+                grupo = this.state.dadosreais[i].GRUPO
+                results2=[]
+                console.log('conta grupo',grupo, this.state.dadosreais[i].AK2_CO)
+                this.findAllChildrenNovo(grupo, results2, 0,'GRUPO')
+                console.log('resp final grupo ',results2)
+            if(contacontabil!==this.state.dadosreais[i].AK2_CO){
+                contacontabil = this.state.dadosreais[i].AK2_CO
+                resultsConta=[]
+                console.log('conta grupo',contacontabil, this.state.dadosreais[i].GRUPO)
+                this.findAllChildrenNovo(contacontabil, resultsConta, 'AK2_CO')
+                console.log('resp final Conta ',resultsConta)
+            }*/
+
+
+
+
+            // if(contacontabil!==this.state.dadosreais[i].AK2_CO){
+            //     contacontabil = this.state.dadosreais[i].AK2_CO
+            //     resultsConta=[]
+            //     console.log('contacontabil grupo',contacontabil, this.state.dadosreais[i].GRUPO)
+            //     this.findAllChildrenCC(contacontabil, resultsConta, 0)
+            //     console.log('resp finalCCCCCCC ',resultsConta)
+                // if(grupo!==this.state.dadosreais[i].GRUPO){
+                //     grupo = this.state.dadosreais[i].GRUPO
+                //     results2=[]
+                //     console.log('grupo ',grupo)
+                //     this.findAllChildrenTeste(grupo, results2, 0)
+                //     console.log('resp final222222 ',results2)
+                // }
+            }
+        }
+        
+        this.montarDados(resultsTotal)
+
+        //console.log('results total final ', resultsTotal)
+        console.log('results nodes ', this.state.nodes)
+        // let jsonteste = JSON.stringify(resultsTotal)
+        // console.log('json final ', jsonteste)
+        
+        
+        
+        //console.log('sem formato ',this.state.nodesSemFormat)
+        //console.log('nodes atual ',this.state.nodes)
+    //    let noarray = this.state.nodesSemFormat
         //let ccant='';
-        let grupoant='';
+    //    let grupoant='';
         //let novoarray = [];
         // for(let i=0; i<noarray.length;i++){
        
         // }
-        var myMap = new Map();
-        var jsonarray = [];
+        //var myMap = new Map();
+      //  var jsonarray = [];
         // jsonarray.push({
         //     root: []
         // });
         //let i=0;
         //noarray.forEach((e)=> {
-        for(let i=0;i<noarray.length;i++){
-            //se o grupo não for o mesmo do anterior, cria um novo
-            if(noarray[i].grupo!==grupoant){
-                console.log('if grupoant', grupoant)
-                myMap.set("cc", noarray[i].grupo);
-                jsonarray.push({
-                    key: noarray[i].grupo,
-                    expanded: true,
-                    data:{
-                        grupoccconta: noarray[i].grupo
-                    },
-                    children:[  
-                        {  
-                            key: noarray[i].grupo+"-"+noarray[i].cc,
-                            expanded: true,
-                            data:{
-                                grupoccconta:noarray[i].cc
-                            },
-                            children:[  
-                                {  
-                                    key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta,
-                                    expanded: true,
-                                    data:{
-                                        grupoccconta:noarray[i].conta
-                                    },
-                                    children:[  
-                                        {  
-                                            key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta+"-"+noarray[i].item,
-                                            expanded: true,
-                                            data:{  
-                                                grupoccconta:"",
-                                                item:noarray[i].item
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    cc: noarray[i].cc,
-                });
-                grupoant=noarray[i].grupo
-            }else{
-                console.log('else')
-                //busca nó do grupo e seta o resto como filho
-                console.log('json array ',jsonarray)
-                let newNodes = JSON.parse(JSON.stringify(jsonarray));
-                let nodeporkey = this.findNodeByKey(newNodes, "Grupo1")
-                console.log('key, new nodes, nodepor key ',noarray[i].grupo,newNodes,nodeporkey)
-                console.log('group 1 ',newNodes.Group1)
-                // newNodes[0].push({
-                //     children:[  
-                //         {  
-                //             key: noarray[i].grupo+"-"+noarray[i].cc,
-                //             expanded: true,
-                //             data:{
-                //                 grupoccconta:noarray[i].cc
-                //             },
-                //             children:[  
-                //                 {  
-                //                     key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta,
-                //                     expanded: true,
-                //                     data:{
-                //                         grupoccconta:noarray[i].conta
-                //                     },
-                //                     children:[  
-                //                         {  
-                //                             key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta+"-"+noarray[i].item,
-                //                             expanded: true,
-                //                             data:{  
-                //                                 grupoccconta:"",
-                //                                 item:noarray[i].item
-                //                             }
-                //                         }
-                //                     ]
-                //                 }
-                //             ]
-                //         }
-                //     ],
-                //     cc: noarray[i].cc,
-                // });
-            }
-        }
 
-        console.log("json resp ", jsonarray)
-        this.setState({
-            nodesFormat:jsonarray
-        })
+        // for(let i=0;i<noarray.length;i++){
+        //     //se o grupo não for o mesmo do anterior, cria um novo
+        //    // if(noarray[i].grupo!==grupoant){
+        //         //console.log('if grupoant', grupoant)
+        //        // myMap.set("cc", noarray[i].grupo);
+        //         jsonarray.push({
+        //             key: noarray[i].grupo, //grupo
+        //             expanded: true,
+        //             data:{
+        //                 grupoccconta: noarray[i].grupo
+        //             },
+        //             children:[  //centro custo
+        //                 {  
+        //                     //for pra add se tiver mais
+        //                     key: noarray[i].grupo+"-"+noarray[i].cc,
+        //                     expanded: true,
+        //                     data:{
+        //                         grupoccconta:noarray[i].cc
+        //                     },
+        //                     children:[  //conta
+        //                         {  
+        //                             key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta,
+        //                             expanded: true,
+        //                             data:{
+        //                                 grupoccconta:noarray[i].conta
+        //                             },
+        //                             children:[  //item
+        //                                 this.addItem(noarray[i])
+        //                             ]
+        //                         }
+        //                     ]
+        //                 }
+        //             ],
+        //             cc: noarray[i].cc,
+        //         });
+        //         grupoant=noarray[i].grupo
+        // }
+
+        // this.setState({
+        //     nodesFormat:jsonarray
+        // })
 
         // let json = this.state.nodesSemFormat;
         // json.forEach(function(obj) {
@@ -145,31 +247,103 @@ class PcoList extends Component {
         // })
 
     }
-    criarSubPasta(obj, parent) {
-        // criar <li>nome</li>
-        var nameLi = document.createElement('li'); 
-        nameLi.innerHTML = obj.name;
-        parent.appendChild(nameLi);
+
+    montarDados(resultsTotal){
+        let arrayFinal = []
+        let adicionados = 0
+        //montar os dados com os meses
+        for(let i = 0; i<resultsTotal.length;i++){
+            for(let j = 0; j<resultsTotal[i].length;j++){
+                console.log('grupo ',resultsTotal[i][j].GRUPO)
+                let encontrou = arrayFinal.find( obj => obj.key === resultsTotal[i][j].GRUPO )
+                console.log('encontrou',encontrou)
+                if(arrayFinal.length===0 || encontrou===undefined || !encontrou){
+                //esta vazio e nao achou o grupo, entao add
+                    console.log('for i j',j,resultsTotal[i][j])
+                    arrayFinal.push({
+                        id: adicionados,
+                        expanded: true,
+                        key: resultsTotal[i][j].GRUPO,
+                        data: {
+                            grupoccconta: resultsTotal[i][j].GRUPO,
+                        },
+                        children: [{
+                            key: resultsTotal[i][j].GRUPO+'-'+resultsTotal[i][j].AK2_CO,
+                            data: {
+                                AK2_PERIOD: resultsTotal[i][j].AK2_PERIOD,
+                                AK2_VALOR: resultsTotal[i][j].AK2_VALOR
+                            }
+                        }]
+                    })
+                    adicionados++
+                    console.log('array final depois push ',arrayFinal)
+                //se ja tem o grupo
+                }else{
+                    arrayFinal[encontrou.id]
+                    .children.push(
+                        [{
+                            key: resultsTotal[i][j].GRUPO+'-'+resultsTotal[i][j].AK2_CO,
+                            data: {
+                                AK2_PERIOD: resultsTotal[i][j].AK2_PERIOD,
+                                AK2_VALOR: resultsTotal[i][j].AK2_VALOR
+                            }
+                        }]
+                    )
+                    console.log('ja tem grupo, encontrou.id', encontrou.id,arrayFinal[encontrou.id])
+                }
+            }
+        }
+
+        console.log('array finallllllll ', arrayFinal)
+        // resultsTotal.push([{
+        //     key: "0",
+        //     expanded: true,
+        //     dados: arrayFinal
+        // }])
+    }
+
+    addItem(items){
+        return({  
+            key: items.grupo+"-"+items.cc+"-"+items.conta+"-"+items.item,
+            expanded: true,
+            data:{  
+                grupoccconta:"",
+                item:items.item,
+                jan: items.jan,
+                fev: items.fev,
+                mar: items.mar
+            }
+        })
+    }
+
+    
+    // criarSubPasta(obj, parent) {
+    //     // criar <li>nome</li>
+    //     var nameLi = document.createElement('li'); 
+    //     nameLi.innerHTML = obj.name;
+    //     parent.appendChild(nameLi);
       
-        // parar aqui se não houver children
-        if (!obj.children) return;
+    //     // parar aqui se não houver children
+    //     if (!obj.children) return;
       
-        // preparar um novo <ul></ul> para as subpastas
-        var childrenLi = document.createElement('li');
-        var ul = document.createElement('ul');
-        parent.appendChild(childrenLi);
-        childrenLi.appendChild(ul);
-        obj.children.forEach(function(child) {
-          // correr a mesma lógica recursivamente nas subpastas
-          this.criarSubPasta(child, ul);
-        });
-      }
+    //     // preparar um novo <ul></ul> para as subpastas
+    //     var childrenLi = document.createElement('li');
+    //     var ul = document.createElement('ul');
+    //     parent.appendChild(childrenLi);
+    //     childrenLi.appendChild(ul);
+    //     obj.children.forEach(function(child) {
+    //       // correr a mesma lógica recursivamente nas subpastas
+    //       this.criarSubPasta(child, ul);
+    //     });
+    //   }
 
     componentDidMount() {
         this.nodeservice.getTreeTableNodes().then(data => this.setState({ nodes: data }));
-        this.nodeservice.convertJson().then(data => this.setState({ nodesSemFormat: data }, () => this.forJson()));
+        this.nodeservice.convertJson().then(data => this.setState({ nodesSemFormat: data }));
+        this.nodeservice.getDadosReais().then(data => this.setState({ dadosreais: data }, () => this.forJson()));
+        this.nodeservice.getDadosReais().then(data => console.log('dadossssssss ',data));
         //this.nodeservice.getPlanilhas().then(data => console.log('data', data));
-
+        
         let expandedKeys = { ...this.state.expandedKeys };
         //expande as colunas
         expandedKeys['0'] = true
@@ -188,6 +362,8 @@ class PcoList extends Component {
         expandedKeys['3-0-0'] = true
         expandedKeys['4-0-0'] = true
         this.setState({ expandedKeys: expandedKeys });
+
+        console.log('dados reais ', this.state.dadosreais)
     }
 
     findNodeByKey(nodes, key) {
