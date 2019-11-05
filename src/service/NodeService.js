@@ -23,6 +23,11 @@ export class NodeService {
         return axios.get('./data/dadosreais.json')
                 .then(res => res.data.root);
     }
+    
+    getDadosReaisMaior() {
+        return axios.get('./data/dadosreaismaior.json')
+                .then(res => res.data.RESULT.ITEMPLANILHA);
+    }
 
     convertJson(){
         //this.nodeservice.getTreeTableNodes().then(data => this.setState({ nodes: data }));

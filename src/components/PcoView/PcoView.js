@@ -22,327 +22,233 @@ class PcoList extends Component {
             justification:'',
             fieldJustification:'',
             rowEdit: [],
-            dadosreais: []
+            dadosreais: [],
+            nodesfinalreal:[]
         };
         this.nodeservice = new NodeService();
 
         this.rowClassName = this.rowClassName.bind(this);
         this.onRefreshStatus = this.onRefreshStatus.bind(this);
         this.renderEditableCell = this.renderEditableCell.bind(this);
-        // this.criarSubPasta = this.criarSubPasta.bind(this);
-        //this.findAllChildren = this.findAllChildren.bind(this);
     }
 
- /*   findAllChildren (id, results, depth) {
-        let data = [{
-            "id": 1,
-            "parent": 0,
-            "name": "Parent"
-          }, {
-            "id": 2,
-            "parent": 1,
-            "name": "Child 1"
-          }, {
-            "id": 3,
-            "parent": 2,
-            "name": "Grand Child 1"
-          }, {
-            "id": 4,
-            "parent": 2,
-            "name": "Grand Child 2"
-          }, {
-            "id": 5,
-            "parent": 1,
-            "name": "Child 2"
-          }]
-
-        for (let d=0; d in data; d++) {
-            if (data[d].parent === id) {
-                data[d].depth = depth
-                results.push(data[d])
-                this.findAllChildren(data[d].id, results, depth + 1)
-            }
-            //console.log('d',d)
-            //console.log('results ',results)
-        }
-    }
-    
-    findAllChildrenTeste (grupoccconta, results, depth) {
+    findAllChildren (id, results, field, id2,field2) {
         let nodestate = this.state.dadosreais
-        //console.log('nodes state ',nodestate)
-        for (let d=0; d in nodestate ; d++) {
-            if (nodestate[d].GRUPO === grupoccconta) {
-                nodestate[d].depth = depth
-                results.push(nodestate[d])
-                this.findAllChildren(nodestate[d].GRUPO, results, depth + 1)
-            }
-        }
-    }
-    
-    findAllChildrenCC (grupoccconta, results, depth) {
-        let nodestate = this.state.dadosreais
-        //console.log('nodes state ',nodestate)
-        for (let d=0; d in nodestate ; d++) {
-            if (nodestate[d].AK2_CO === grupoccconta) {
-                nodestate[d].depth = depth
-                results.push(nodestate[d])
-                this.findAllChildren(nodestate[d].AK2_CO, results, depth + 1)
-            }
-        }
-    }
-    
-    findAllChildrenNovo (id, results, depth, field) {
-        console.log('field depth ',field, depth)
-        let nodestate = this.state.dadosreais
+        let meses=[25]
+        let periodo=''
         for (let d=0; d in nodestate; d++) {
-            if (nodestate[d][field] === id) {
-                nodestate[d].depth = depth
-                results.push(nodestate[d])
-                this.findAllChildrenNovo(nodestate[d][field], results, depth+1, 'AK2_CO')
-            }
-            //console.log('d',d)
-            //console.log('results ',results)
-        }
-    }*/
-
-    findAllChildrenNovo (id, results, field) {
-        let nodestate = this.state.dadosreais
-        for (let d=0; d in nodestate; d++) {
-            if (nodestate[d][field] === id) {
-                nodestate[d].AK2_PERIOD = nodestate[d].AK2_PERIOD.substring(4, 6);
+            if (nodestate[d][field] === id && nodestate[d][field2] === id2) {
+                nodestate[d].PERIODO = nodestate[d].PERIODO.substring(4, 6);
+                //periodo = this.state.meses[parseInt(nodestate[d].AK2_PERIOD, 10)];
+                periodo = nodestate[d].PERIODO;
+                meses[parseInt(periodo, 10)] = nodestate[d].VLR_ORI;
+                meses[parseInt(periodo, 10)+12] = nodestate[d].VLR_ALT;
+                //mesesstr=+periodo+':'+valor+',' 
+                nodestate[d].meses = meses   
                 results.push(nodestate[d])
             }
-            //console.log('d',d)
-            //console.log('results ',results)
         }
     }
     
     forJson(){
-        // var results = []
-        // this.findAllChildren(0, results, 0)
-        // console.log('resp final ',results)
-        
         var resultsTotal = []
         let grupo=[]
         var resultsConta = []
         let contacontabil=''
         let centrocusto=''
-        //console.log('dados reais ',this.state.dadosreais)
+        let adicionados=[]
+        let cont=0
         for(let i=0;i<this.state.dadosreais.length;i++){
-            //ver se da certo validar os 3, grupo conta e cc
-            if(contacontabil!==this.state.dadosreais[i].AK2_CO){
-                contacontabil = this.state.dadosreais[i].AK2_CO
-                resultsConta=[]
-                //console.log('conta grupo',contacontabil, this.state.dadosreais[i].GRUPO)
-                this.findAllChildrenNovo(contacontabil, resultsConta, 'AK2_CO')
-                //console.log('resp final Conta ',resultsConta)
-                resultsTotal.push(resultsConta)
-
-           /* if(grupo!==this.state.dadosreais[i].GRUPO){
+            if(!adicionados.find(key => key === this.state.dadosreais[i].GRUPO+this.state.dadosreais[i].CONTA+this.state.dadosreais[i].CC)){
                 grupo = this.state.dadosreais[i].GRUPO
-                results2=[]
-                console.log('conta grupo',grupo, this.state.dadosreais[i].AK2_CO)
-                this.findAllChildrenNovo(grupo, results2, 0,'GRUPO')
-                console.log('resp final grupo ',results2)
-            if(contacontabil!==this.state.dadosreais[i].AK2_CO){
-                contacontabil = this.state.dadosreais[i].AK2_CO
+                contacontabil = this.state.dadosreais[i].CONTA
+                centrocusto = this.state.dadosreais[i].CC
+                adicionados[cont++]=grupo+contacontabil+centrocusto
                 resultsConta=[]
-                console.log('conta grupo',contacontabil, this.state.dadosreais[i].GRUPO)
-                this.findAllChildrenNovo(contacontabil, resultsConta, 'AK2_CO')
-                console.log('resp final Conta ',resultsConta)
-            }*/
-
-
-
-
-            // if(contacontabil!==this.state.dadosreais[i].AK2_CO){
-            //     contacontabil = this.state.dadosreais[i].AK2_CO
-            //     resultsConta=[]
-            //     console.log('contacontabil grupo',contacontabil, this.state.dadosreais[i].GRUPO)
-            //     this.findAllChildrenCC(contacontabil, resultsConta, 0)
-            //     console.log('resp finalCCCCCCC ',resultsConta)
-                // if(grupo!==this.state.dadosreais[i].GRUPO){
-                //     grupo = this.state.dadosreais[i].GRUPO
-                //     results2=[]
-                //     console.log('grupo ',grupo)
-                //     this.findAllChildrenTeste(grupo, results2, 0)
-                //     console.log('resp final222222 ',results2)
-                // }
+                this.findAllChildren(contacontabil, resultsConta, 'CONTA', centrocusto, 'CC')
+                resultsTotal.push(resultsConta)
             }
         }
         
         this.montarDados(resultsTotal)
 
-        //console.log('results total final ', resultsTotal)
-        console.log('results nodes ', this.state.nodes)
+        console.log('results total final ', resultsTotal)
         // let jsonteste = JSON.stringify(resultsTotal)
-        // console.log('json final ', jsonteste)
-        
-        
-        
-        //console.log('sem formato ',this.state.nodesSemFormat)
-        //console.log('nodes atual ',this.state.nodes)
-    //    let noarray = this.state.nodesSemFormat
-        //let ccant='';
-    //    let grupoant='';
-        //let novoarray = [];
-        // for(let i=0; i<noarray.length;i++){
-       
-        // }
-        //var myMap = new Map();
-      //  var jsonarray = [];
-        // jsonarray.push({
-        //     root: []
-        // });
-        //let i=0;
-        //noarray.forEach((e)=> {
-
-        // for(let i=0;i<noarray.length;i++){
-        //     //se o grupo não for o mesmo do anterior, cria um novo
-        //    // if(noarray[i].grupo!==grupoant){
-        //         //console.log('if grupoant', grupoant)
-        //        // myMap.set("cc", noarray[i].grupo);
-        //         jsonarray.push({
-        //             key: noarray[i].grupo, //grupo
-        //             expanded: true,
-        //             data:{
-        //                 grupoccconta: noarray[i].grupo
-        //             },
-        //             children:[  //centro custo
-        //                 {  
-        //                     //for pra add se tiver mais
-        //                     key: noarray[i].grupo+"-"+noarray[i].cc,
-        //                     expanded: true,
-        //                     data:{
-        //                         grupoccconta:noarray[i].cc
-        //                     },
-        //                     children:[  //conta
-        //                         {  
-        //                             key: noarray[i].grupo+"-"+noarray[i].cc+"-"+noarray[i].conta,
-        //                             expanded: true,
-        //                             data:{
-        //                                 grupoccconta:noarray[i].conta
-        //                             },
-        //                             children:[  //item
-        //                                 this.addItem(noarray[i])
-        //                             ]
-        //                         }
-        //                     ]
-        //                 }
-        //             ],
-        //             cc: noarray[i].cc,
-        //         });
-        //         grupoant=noarray[i].grupo
-        // }
-
-        // this.setState({
-        //     nodesFormat:jsonarray
-        // })
-
-        // let json = this.state.nodesSemFormat;
-        // json.forEach(function(obj) {
-        //     //var ul = document.createElement('ul');
-        //     //document.body.appendChild(ul);
-        //     //this.criarSubPasta(obj, ul);
-        // })
-
     }
-
+    
+    //TODO: faltando agrupar os grupos/cc/conta
     montarDados(resultsTotal){
+        console.log('resultsTotal dentro montardados', resultsTotal)
         let arrayFinal = []
         let adicionados = 0
-        //montar os dados com os meses
+        let expandedKeys = { ...this.state.expandedKeys };
+        let key1='0',key2='0',key3='0',key4='0'
+        let grupocccontaid = ''
         for(let i = 0; i<resultsTotal.length;i++){
-            for(let j = 0; j<resultsTotal[i].length;j++){
-                console.log('grupo ',resultsTotal[i][j].GRUPO)
-                let encontrou = arrayFinal.find( obj => obj.key === resultsTotal[i][j].GRUPO )
-                console.log('encontrou',encontrou)
-                if(arrayFinal.length===0 || encontrou===undefined || !encontrou){
-                //esta vazio e nao achou o grupo, entao add
-                    console.log('for i j',j,resultsTotal[i][j])
-                    arrayFinal.push({
-                        id: adicionados,
-                        expanded: true,
-                        key: resultsTotal[i][j].GRUPO,
+            grupocccontaid = resultsTotal[i][0].GRUPO//+"+"+resultsTotal[i][0].CC//+"+"+resultsTotal[i][0].CONTA
+            //let encontrou = arrayFinal.find( obj => obj.grupocccontaid === grupocccontaid )
+            let encontrou = arrayFinal.find( obj => obj.data.grupoccconta === grupocccontaid )
+            console.log('encontrou ', encontrou)
+            if(arrayFinal.length===0 || encontrou===undefined || !encontrou){
+                expandedKeys[key1] = true
+                expandedKeys[key1+'+'+key2] = true
+                expandedKeys[key1+'+'+key2+'+'+key3] = true
+                expandedKeys[key1+'+'+key2+'+'+key3+'+'+key4] = true
+
+                arrayFinal.push({
+                    id: adicionados,//indica a posição no array
+                    expanded: true,
+                    key: key1,
+                    grupocccontaid : grupocccontaid,
+                    data: {
+                        grupoccconta: resultsTotal[i][0].GRUPO,
+                        indice: resultsTotal[i][0].GRUPO,
+                        jan: resultsTotal[i][0].meses[1],fev: resultsTotal[i][0].meses[2],mar: resultsTotal[i][0].meses[3],abr: resultsTotal[i][0].meses[4],
+                        mai: resultsTotal[i][0].meses[5],jun: resultsTotal[i][0].meses[6],jul: resultsTotal[i][0].meses[7],ago: resultsTotal[i][0].meses[8],
+                        set: resultsTotal[i][0].meses[9],out: resultsTotal[i][0].meses[10],nov: resultsTotal[i][0].meses[11],dez: resultsTotal[i][0].meses[12],
+                        janalt: resultsTotal[i][0].meses[1],fevalt: resultsTotal[i][0].meses[2],maralt: resultsTotal[i][0].meses[3],abralt: resultsTotal[i][0].meses[4],
+                        maialt: resultsTotal[i][0].meses[5],junalt: resultsTotal[i][0].meses[6],julalt: resultsTotal[i][0].meses[7],agoalt: resultsTotal[i][0].meses[8],
+                        setalt: resultsTotal[i][0].meses[9],outalt: resultsTotal[i][0].meses[10],novalt: resultsTotal[i][0].meses[11],dezalt: resultsTotal[i][0].meses[12],
+                    },
+                    children: [{
+                        key: key1+'+'+key2,
                         data: {
-                            grupoccconta: resultsTotal[i][j].GRUPO,
+                            grupoccconta: resultsTotal[i][0].CC,
+                            indice: resultsTotal[i][0].GRUPO+'+'+resultsTotal[i][0].CC
                         },
-                        children: [{
-                            key: resultsTotal[i][j].GRUPO+'-'+resultsTotal[i][j].AK2_CO,
+                        children:[{
+                            key: key1+'+'+key2+'+'+key3,
                             data: {
-                                AK2_PERIOD: resultsTotal[i][j].AK2_PERIOD,
-                                AK2_VALOR: resultsTotal[i][j].AK2_VALOR
+                                grupoccconta: resultsTotal[i][0].CONTA,
+                                indice: resultsTotal[i][0].GRUPO+'+'+resultsTotal[i][0].CC
+                            },
+                            children:[{
+                                key: key1+'+'+key2+'+'+key3+'+'+key4,
+                                item: '1',
+                                data: {
+                                    key: key1+'+'+key2+'+'+key3+'+'+key4,
+                                    indice: resultsTotal[i][0].GRUPO+'+'+resultsTotal[i][0].CC+'+'+resultsTotal[i][0].CONTA+'+1',
+                                    PERIODO: resultsTotal[i][0].PERIODO,
+                                    VLR_ORI: resultsTotal[i][0].VLR_ORI,
+                                    jan: resultsTotal[i][0].meses[1],fev: resultsTotal[i][0].meses[2],mar: resultsTotal[i][0].meses[3],abr: resultsTotal[i][0].meses[4],
+                                    mai: resultsTotal[i][0].meses[5],jun: resultsTotal[i][0].meses[6],jul: resultsTotal[i][0].meses[7],ago: resultsTotal[i][0].meses[8],
+                                    set: resultsTotal[i][0].meses[9],out: resultsTotal[i][0].meses[10],nov: resultsTotal[i][0].meses[11],dez: resultsTotal[i][0].meses[12],
+                                    janalt: resultsTotal[i][0].meses[1],fevalt: resultsTotal[i][0].meses[2],maralt: resultsTotal[i][0].meses[3],abralt: resultsTotal[i][0].meses[4],
+                                    maialt: resultsTotal[i][0].meses[5],junalt: resultsTotal[i][0].meses[6],julalt: resultsTotal[i][0].meses[7],agoalt: resultsTotal[i][0].meses[8],
+                                    setalt: resultsTotal[i][0].meses[9],outalt: resultsTotal[i][0].meses[10],novalt: resultsTotal[i][0].meses[11],dezalt: resultsTotal[i][0].meses[12],
+                                    jusjan:"",jusfev:"",jusmar:"",jusabr:"",jusmai:"",jusjun:"",jusjul:"",jusago:"",jusset:"",jusout:"",jusnov:"",jusdez:""
+                                }
+                            }]
+                        }]
+                    }]
+                })
+                adicionados++
+                key1++
+            }else{
+                //depois, mudar para validar somente grupo acima e validar CC aqui e abaixo a conta
+                //add conta no centro de custo
+                console.log('encontrou/resultstotal else///////// ',encontrou,resultsTotal[i][0])
+                let encontrouCC = encontrou.children.find( obj => obj.data.grupoccconta === resultsTotal[i][0].CC )
+                console.log('encontrou CC ',encontrouCC)
+                
+                if(encontrouCC){
+                    let ultimoChildren = encontrou.children[0].children.length
+                    console.log('ultimo children',ultimoChildren)
+                    let keysplit = encontrou.children[0].children[ultimoChildren-1].children[0].key.split("+")
+                    let key1tmp=parseInt(keysplit[0]),key2tmp=parseInt(keysplit[1]),key3tmp=parseInt(keysplit[2])+1,key4tmp=parseInt(keysplit[3])
+                    expandedKeys[key1tmp] = true
+                    expandedKeys[key1tmp+'+'+key2tmp] = true
+                    expandedKeys[key1tmp+'+'+key2tmp+'+'+key3tmp] = true
+                    expandedKeys[key1tmp+'+'+key2tmp+'+'+key3tmp+'+'+key4tmp] = true
+                    console.log('keyyyyy split',keysplit,'ultimo children',ultimoChildren)
+                    console.log('keys tmp ', key1tmp, key2tmp, key3tmp, key4tmp)
+                    //console.log('key split 2', keysplit[2])
+                    arrayFinal[encontrou.id].children[0].children.push({
+                        key: key1tmp+"+"+key2tmp+"+"+key3tmp,
+                        data: {
+                            grupoccconta: resultsTotal[i][0].CONTA,
+                            indice: resultsTotal[i][0].GRUPO+'+'+resultsTotal[i][0].CC
+                        },
+                        children:[{
+                            key: key1tmp+"+"+key2tmp+"+"+key3tmp +"+"+key4tmp,
+                            item: '1',
+                            data: {
+                                key: key1tmp+"+"+key2tmp+"+"+key3tmp+"+"+key4tmp,
+                                indice: resultsTotal[i][0].GRUPO+'+'+resultsTotal[i][0].CC+'+'+resultsTotal[i][0].CONTA+'+1',
+                                PERIODO: resultsTotal[i][0].PERIODO,
+                                VLR_ORI: resultsTotal[i][0].VLR_ORI,
+                                jan: resultsTotal[i][0].meses[1],fev: resultsTotal[i][0].meses[2],mar: resultsTotal[i][0].meses[3],abr: resultsTotal[i][0].meses[4],
+                                mai: resultsTotal[i][0].meses[5],jun: resultsTotal[i][0].meses[6],jul: resultsTotal[i][0].meses[7],ago: resultsTotal[i][0].meses[8],
+                                set: resultsTotal[i][0].meses[9],out: resultsTotal[i][0].meses[10],nov: resultsTotal[i][0].meses[11],dez: resultsTotal[i][0].meses[12],
+                                janalt: resultsTotal[i][0].meses[1],fevalt: resultsTotal[i][0].meses[2],maralt: resultsTotal[i][0].meses[3],abralt: resultsTotal[i][0].meses[4],
+                                maialt: resultsTotal[i][0].meses[5],junalt: resultsTotal[i][0].meses[6],julalt: resultsTotal[i][0].meses[7],agoalt: resultsTotal[i][0].meses[8],
+                                setalt: resultsTotal[i][0].meses[9],outalt: resultsTotal[i][0].meses[10],novalt: resultsTotal[i][0].meses[11],dezalt: resultsTotal[i][0].meses[12],
+                                jusjan:"",jusfev:"",jusmar:"",jusabr:"",jusmai:"",jusjun:"",jusjul:"",jusago:"",jusset:"",jusout:"",jusnov:"",jusdez:""
                             }
                         }]
                     })
-                    adicionados++
-                    console.log('array final depois push ',arrayFinal)
-                //se ja tem o grupo
                 }else{
-                    arrayFinal[encontrou.id]
-                    .children.push(
-                        [{
-                            key: resultsTotal[i][j].GRUPO+'-'+resultsTotal[i][j].AK2_CO,
+                    let ultimoChildren = encontrou.children.length
+                    let keysplit = encontrou.children[ultimoChildren-1].key.split("+")
+                    console.log('ultimochildren',ultimoChildren,'keysplit ',keysplit)
+                    let key1tmp=parseInt(keysplit[0]),key2tmp=parseInt(keysplit[1])+1,key3tmp=parseInt(keysplit[2]),key4tmp=parseInt(keysplit[3])
+                    
+                    
+                    
+                    key2tmp=key2tmp++
+                    key3tmp=0
+                    expandedKeys[key1tmp] = true
+                    expandedKeys[key1tmp+'+'+key2tmp] = true
+                    expandedKeys[key1tmp+'+'+key2tmp+'+'+key3tmp] = true
+                    expandedKeys[key1tmp+'+'+key2tmp+'+'+key3tmp+'+'+key4tmp] = true
+                    console.log('elseeeeeeee key2tmp',key2tmp)
+                    arrayFinal[encontrou.id].children.push({
+                            key: key1tmp+"+"+key2tmp,
                             data: {
-                                AK2_PERIOD: resultsTotal[i][j].AK2_PERIOD,
-                                AK2_VALOR: resultsTotal[i][j].AK2_VALOR
-                            }
-                        }]
-                    )
-                    console.log('ja tem grupo, encontrou.id', encontrou.id,arrayFinal[encontrou.id])
+                                grupoccconta: resultsTotal[i][0].CC,
+                                indice: resultsTotal[i][0].GRUPO+'+'+resultsTotal[i][0].CC
+                            },
+                            children:[{
+                                key: key1tmp+"+"+key2tmp+"+"+key3tmp,
+                                data: {
+                                    grupoccconta: resultsTotal[i][0].CONTA,
+                                    indice: resultsTotal[i][0].GRUPO+'+'+resultsTotal[i][0].CC
+                                },
+                                children:[{
+                                    key: key1tmp+"+"+key2tmp+"+"+key3tmp +"+"+key4tmp,
+                                    item: '1',
+                                    data: {
+                                        key: key1tmp+"+"+key2tmp+"+"+key3tmp+"+"+key4tmp,
+                                        indice: resultsTotal[i][0].GRUPO+'+'+resultsTotal[i][0].CC+'+'+resultsTotal[i][0].CONTA+'+1',
+                                        PERIODO: resultsTotal[i][0].PERIODO,
+                                        VLR_ORI: resultsTotal[i][0].VLR_ORI,
+                                        jan: resultsTotal[i][0].meses[1],fev: resultsTotal[i][0].meses[2],mar: resultsTotal[i][0].meses[3],abr: resultsTotal[i][0].meses[4],
+                                        mai: resultsTotal[i][0].meses[5],jun: resultsTotal[i][0].meses[6],jul: resultsTotal[i][0].meses[7],ago: resultsTotal[i][0].meses[8],
+                                        set: resultsTotal[i][0].meses[9],out: resultsTotal[i][0].meses[10],nov: resultsTotal[i][0].meses[11],dez: resultsTotal[i][0].meses[12],
+                                        janalt: resultsTotal[i][0].meses[1],fevalt: resultsTotal[i][0].meses[2],maralt: resultsTotal[i][0].meses[3],abralt: resultsTotal[i][0].meses[4],
+                                        maialt: resultsTotal[i][0].meses[5],junalt: resultsTotal[i][0].meses[6],julalt: resultsTotal[i][0].meses[7],agoalt: resultsTotal[i][0].meses[8],
+                                        setalt: resultsTotal[i][0].meses[9],outalt: resultsTotal[i][0].meses[10],novalt: resultsTotal[i][0].meses[11],dezalt: resultsTotal[i][0].meses[12],
+                                        jusjan:"",jusfev:"",jusmar:"",jusabr:"",jusmai:"",jusjun:"",jusjul:"",jusago:"",jusset:"",jusout:"",jusnov:"",jusdez:""
+                                    }
+                                }]
+                            }]
+                    })
                 }
             }
         }
-
-        console.log('array finallllllll ', arrayFinal)
-        // resultsTotal.push([{
-        //     key: "0",
-        //     expanded: true,
-        //     dados: arrayFinal
-        // }])
-    }
-
-    addItem(items){
-        return({  
-            key: items.grupo+"-"+items.cc+"-"+items.conta+"-"+items.item,
-            expanded: true,
-            data:{  
-                grupoccconta:"",
-                item:items.item,
-                jan: items.jan,
-                fev: items.fev,
-                mar: items.mar
-            }
+        console.log('arrayFinal fim montar dados', arrayFinal)
+        this.setState({
+            nodesfinalreal:arrayFinal,
+            expandedKeys: expandedKeys
         })
     }
-
-    
-    // criarSubPasta(obj, parent) {
-    //     // criar <li>nome</li>
-    //     var nameLi = document.createElement('li'); 
-    //     nameLi.innerHTML = obj.name;
-    //     parent.appendChild(nameLi);
-      
-    //     // parar aqui se não houver children
-    //     if (!obj.children) return;
-      
-    //     // preparar um novo <ul></ul> para as subpastas
-    //     var childrenLi = document.createElement('li');
-    //     var ul = document.createElement('ul');
-    //     parent.appendChild(childrenLi);
-    //     childrenLi.appendChild(ul);
-    //     obj.children.forEach(function(child) {
-    //       // correr a mesma lógica recursivamente nas subpastas
-    //       this.criarSubPasta(child, ul);
-    //     });
-    //   }
 
     componentDidMount() {
         this.nodeservice.getTreeTableNodes().then(data => this.setState({ nodes: data }));
         this.nodeservice.convertJson().then(data => this.setState({ nodesSemFormat: data }));
         this.nodeservice.getDadosReais().then(data => this.setState({ dadosreais: data }, () => this.forJson()));
-        this.nodeservice.getDadosReais().then(data => console.log('dadossssssss ',data));
-        //this.nodeservice.getPlanilhas().then(data => console.log('data', data));
+        //alterar depois para buscar com mais dados
+        //this.nodeservice.getDadosReaisMaior().then(data => this.setState({ dadosreais: data }, () => this.forJson()));
         
         let expandedKeys = { ...this.state.expandedKeys };
         //expande as colunas
@@ -362,19 +268,16 @@ class PcoList extends Component {
         expandedKeys['3-0-0'] = true
         expandedKeys['4-0-0'] = true
         this.setState({ expandedKeys: expandedKeys });
-
-        console.log('dados reais ', this.state.dadosreais)
     }
 
     findNodeByKey(nodes, key) {
-        console.log('findNodeByKey', nodes,key)
-        let path = key.split('-');
+        //let path = key.split('-');
+        let path = key.split('+');
         let node;
-        console.log('split', path)
         while (path.length) {
             let list = node ? node.children : nodes;
-            node = list[parseInt(path[0], 10)];
-            console.log('node while ',node)
+            //node = list[parseInt(path[0], 10)];
+            node = list[path[0]];
             path.shift();
         }
         return node;
@@ -395,13 +298,22 @@ class PcoList extends Component {
         });
     }
     
+    toggleModalClose = () => {
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
+    
     //salvar da modal de justificativa
     toggleModalSave = () => {
-        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
-        let nodeporkey = this.findNodeByKey(newNodes, this.state.rowEdit.indice)
+        //let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        let newNodes = JSON.parse(JSON.stringify(this.state.nodesfinalreal));
+        console.log('row edit', this.state.rowEdit)
+        let nodeporkey = this.findNodeByKey(newNodes, this.state.rowEdit.key)
+        console.log('indice, node por key ',this.state.rowEdit.key, nodeporkey)
         nodeporkey.data[this.state.fieldJustification]=this.state.justification
         this.setState({
-            nodes: newNodes,
+            nodesfinalreal: newNodes,
             modal: !this.state.modal
         });
     }
@@ -409,41 +321,48 @@ class PcoList extends Component {
     //busca o nó a ser alterado, seta o novo valor e atualiza o total
     onEditorValueChange(row, value, field) {
         value = value !== null && value !== '' ? value : 0
-        let valueAnt = row.data[field];
-        if(parseInt(value, 10)!==parseInt(valueAnt, 10)){
-            let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        let valueAnt = parseFloat(row.data[field].replace(',', '.'));
+        value = parseFloat(value.replace(',', '.'));
+        if(value!==valueAnt){
+            //let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+            let newNodes = JSON.parse(JSON.stringify(this.state.nodesfinalreal));
+            
             //busca o no pai e altera o total
-            let noPai = this.findNodeByKey(newNodes, row.key.split('-')[0])
-            noPai.data[field] = noPai.data[field] - parseInt(valueAnt, 10) + parseInt(value, 10)
+            let noPai = this.findNodeByKey(newNodes, row.key.split('+')[0])
+            noPai.data[field] = parseFloat(noPai.data[field].replace(',', '.')).toFixed(2) - valueAnt + value
+            
             //busca o no atual e seta o novo valor e altera o status
             let editedNode = this.findNodeByKey(newNodes, row.key);
             editedNode.data[field] = value;
             editedNode.data.status = 'alterado'
+            
             this.setState({
-                nodes: newNodes
+                nodesfinalreal: newNodes
+                //nodes: newNodes
             });
         }
     }
 
     //monta o campo edit em cada celula
     renderEditableCell = (row, field) => {
-        let tamanho = row.data.indice.split('-').length;
+        //let tamanho = row.data.indice.split('-').length;
+        let tamanho = row.data.indice.split('+').length;
         //se for nó pai mostra só o input com o total
         if (tamanho < 2) {
             return (
-                <InputText type="text" value={row.data[field]} style={{ width: '40px' }} disabled={true} />
+                <InputText type="text" value={row.data[field]} style={{ width: '100%' }} disabled={true} />
             );
         //se for os itens mostra o input para edicao e o botao para justificativa    
         } else if (tamanho > 3) {
             return (
                 <ButtonGroup>
-                    <InputText type='number' defaultValue={row.data[field]} style={{ width: '40px' }}
-                        onBlur={(e) => this.onEditorValueChange(row, e.target.value, field)}>
+                    <InputText type='text' defaultValue={row.data[field]} style={{ width: '100%' }} //format='###.##' placeholder="0.00" 
+                        onBlur={(e) => this.onEditorValueChange(row, e.target.value, field)} >
                     </InputText>
                     <Button color="primary" size="xs" onClick={() => this.toggleModal(row, field)} data-toggle="tooltip" title="Justificativa" hidden={tamanho === 1}
                         tabIndex={-1} style={{ width: '22px' }}>
                         <em className="fa-1x icon-plus xs-1" ></em>
-                    </Button>
+                    </Button> 
                 </ButtonGroup>
             );
         } else {
@@ -453,7 +372,8 @@ class PcoList extends Component {
 
     //altera a cor da linha
     rowClassName(node) {
-        let keys = node.key.split('-')
+        //let keys = node.key.split('-')
+        let keys = node.key+''.split('+')
         return {
             'bg-gray': (keys.length === 1), 'bg-gray-light': (keys.length === 2), 'bg-gray-lighter': (keys.length === 3),
             'bg-yellow-light': node.data.status === 'alterado', 'bg-success-light':node.data.status==='confirmed', 'bg-danger-light':node.data.status==='rejected'
@@ -462,17 +382,20 @@ class PcoList extends Component {
 
     //altera a cor da linha para verde(confirmado) ou vermelho(rejeitado)
     onRefreshStatus(props, value) {
-        let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        //let newNodes = JSON.parse(JSON.stringify(this.state.nodes));
+        let newNodes = JSON.parse(JSON.stringify(this.state.nodesfinalreal));
         let editedNode = this.findNodeByKey(newNodes, props.key);
         editedNode.data.status = value
         this.setState({
-            nodes: newNodes
+            nodesfinalreal: newNodes
+            //nodes: newNodes
         });
     }
 
     //monta os botoes da ultima coluna
     actionTemplate(node) {
-        let keys = node.key.split('-')
+        //let keys = node.key.split('-')
+        let keys = (""+node.key).split('+')
         return <div hidden={keys.length<4}  >
             <ButtonGroup>
                 <Button color="success" className="btn-labeled" onClick={() => this.onRefreshStatus(node,'confirmed')} data-toggle="tooltip" title="Aceitar">
@@ -494,7 +417,6 @@ class PcoList extends Component {
     }
 
     render() {
-        // let style={backgroundColor:'#ffffb3'}
         const {t}= this.props;
         return (
             <div className="App">
@@ -523,39 +445,39 @@ class PcoList extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={this.toggleModalSave}>Save</Button>{' '}
-                        <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
+                        <Button color="secondary" onClick={this.toggleModalClose}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
                 <div className="table table-bordered content-section implementation react-grid-Header">
-                    <TreeTable value={this.state.nodes} expandedKeys={this.state.expandedKeys} 
+                    <TreeTable value={this.state.nodesfinalreal} expandedKeys={this.state.expandedKeys} //nodesfinalreal
                         tableClassName="p-treetable p-component " scrollable scrollHeight="700px" scrollWidth="1600px"  
                         rowClassName={this.rowClassName} onToggle={e => this.setState({ expandedKeys: e.value })} responsive >
                         <Column field="grupoccconta" header={t('titles.header')} expander style={{ width: '200px' }} />
-                        <Column field="item" header={t('titles.item')} style={{ width: '70px' }} />
-                        <Column field="jan" header={t('titles.jan')} style={{ width: '70px' }} />
-                        <Column field="janalt" header={t('titles.janalt')} body={(e) => this.renderEditableCell(e,'janalt')} style={{ width: '70px' }} />
-                        <Column field="fev" header={t('titles.feb')} style={{ width: '70px' }} />
-                        <Column field="fevalt" header={t('titles.febalt')} body={(e) => this.renderEditableCell(e,'fevalt')} style={{ width: '70px' }} />
-                        <Column field="mar" header={t('titles.mar')} style={{ width: '70px' }} />
-                        <Column field="maralt" header={t('titles.maralt')} body={(e) => this.renderEditableCell(e,'maralt')} style={{ width: '70px' }} />
-                        <Column field="abr" header={t('titles.apr')} style={{ width: '70px' }} />
-                        <Column field="abralt" header={t('titles.apralt')} body={(e) => this.renderEditableCell(e,'abralt')} style={{ width: '70px' }} />
-                        <Column field="mai" header={t('titles.may')} style={{ width: '70px' }} />
-                        <Column field="maialt" header={t('titles.mayalt')} body={(e) => this.renderEditableCell(e,'maialt')} style={{ width: '70px' }} />
-                        <Column field="jun" header={t('titles.jun')} style={{ width: '70px' }} />
-                        <Column field="junalt" header={t('titles.junalt')} body={(e) => this.renderEditableCell(e,'junalt')} style={{ width: '70px' }} />
-                        <Column field="jul" header={t('titles.jul')} style={{ width: '70px' }} />
-                        <Column field="julalt" header={t('titles.julalt')} body={(e) => this.renderEditableCell(e,'julalt')} style={{ width: '70px' }} />
-                        <Column field="ago" header={t('titles.aug')} style={{ width: '70px' }} />
-                        <Column field="agoalt" header={t('titles.augalt')} body={(e) => this.renderEditableCell(e,'agoalt')} style={{ width: '70px' }} />
-                        <Column field="set" header={t('titles.sep')} style={{ width: '70px' }} />
-                        <Column field="setalt" header={t('titles.sepalt')} body={(e) => this.renderEditableCell(e,'setalt')} style={{ width: '70px' }} />
-                        <Column field="out" header={t('titles.oct')} style={{ width: '70px' }} />
-                        <Column field="outalt" header={t('titles.octalt')} body={(e) => this.renderEditableCell(e,'outalt')} style={{ width: '70px' }} />
-                        <Column field="nov" header={t('titles.nov')} style={{ width: '70px' }} />
-                        <Column field="novalt" header={t('titles.novalt')} body={(e) => this.renderEditableCell(e,'novalt')} style={{ width: '70px' }} />
-                        <Column field="dez" header={t('titles.dec')} style={{ width: '70px' }} />
-                        <Column field="dezalt" header={t('titles.decalt')} body={(e) => this.renderEditableCell(e,'dezalt')} style={{ width: '70px' }} />
+                        <Column field="item" header={t('titles.item')} style={{ width: '100px' }} />
+                        <Column field="jan" header={t('titles.jan')} style={{ width: '100px' }} />
+                        <Column field="janalt" header={t('titles.janalt')} body={(e) => this.renderEditableCell(e,'janalt')} style={{ width: '100px' }} />
+                        <Column field="fev" header={t('titles.feb')} style={{ width: '100px' }} />
+                        <Column field="fevalt" header={t('titles.febalt')} body={(e) => this.renderEditableCell(e,'fevalt')} style={{ width: '100px' }} />
+                        <Column field="mar" header={t('titles.mar')} style={{ width: '100px' }} />
+                        <Column field="maralt" header={t('titles.maralt')} body={(e) => this.renderEditableCell(e,'maralt')} style={{ width: '100px' }} />
+                        <Column field="abr" header={t('titles.apr')} style={{ width: '100px' }} />
+                        <Column field="abralt" header={t('titles.apralt')} body={(e) => this.renderEditableCell(e,'abralt')} style={{ width: '100px' }} />
+                        <Column field="mai" header={t('titles.may')} style={{ width: '100px' }} />
+                        <Column field="maialt" header={t('titles.mayalt')} body={(e) => this.renderEditableCell(e,'maialt')} style={{ width: '100px' }} />
+                        <Column field="jun" header={t('titles.jun')} style={{ width: '100px' }} />
+                        <Column field="junalt" header={t('titles.junalt')} body={(e) => this.renderEditableCell(e,'junalt')} style={{ width: '100px' }} />
+                        <Column field="jul" header={t('titles.jul')} style={{ width: '100px' }} />
+                        <Column field="julalt" header={t('titles.julalt')} body={(e) => this.renderEditableCell(e,'julalt')} style={{ width: '100px' }} />
+                        <Column field="ago" header={t('titles.aug')} style={{ width: '100px' }} />
+                        <Column field="agoalt" header={t('titles.augalt')} body={(e) => this.renderEditableCell(e,'agoalt')} style={{ width: '100px' }} />
+                        <Column field="set" header={t('titles.sep')} style={{ width: '100px' }} />
+                        <Column field="setalt" header={t('titles.sepalt')} body={(e) => this.renderEditableCell(e,'setalt')} style={{ width: '100px' }} />
+                        <Column field="out" header={t('titles.oct')} style={{ width: '100px' }} />
+                        <Column field="outalt" header={t('titles.octalt')} body={(e) => this.renderEditableCell(e,'outalt')} style={{ width: '100px' }} />
+                        <Column field="nov" header={t('titles.nov')} style={{ width: '100px' }} />
+                        <Column field="novalt" header={t('titles.novalt')} body={(e) => this.renderEditableCell(e,'novalt')} style={{ width: '100px' }} />
+                        <Column field="dez" header={t('titles.dec')} style={{ width: '100px' }} />
+                        <Column field="dezalt" header={t('titles.decalt')} body={(e) => this.renderEditableCell(e,'dezalt')} style={{ width: '100px' }} />
                         <Column body={(e) => this.actionTemplate(e)} style={{ textAlign: 'center', width: '8em' }} />
                     </TreeTable>
                 </div>
