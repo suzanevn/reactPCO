@@ -13,6 +13,7 @@ import BasePage from './components/Layout/BasePage';
 const waitFor = Tag => props => <Tag {...props}/>;
 
 const PcoView = lazy(() => import('./components/PcoView/PcoView'));
+//const PcoViewGerente = lazy(() => import('./components/PcoView/PcoViewGerente'));
 const PcoViewNova = lazy(() => import('./components/PcoView/PcoViewNova'));
 const PcoPlan = lazy(() => import('./components/PcoView/PcoPlan'));
 const Login = lazy(() => import('./components/Pages/Login'));
@@ -59,7 +60,9 @@ const Routes = ({ location }) => {
                             <Switch location={location}>
                                 <Route path="/login" component={waitFor(Login)}/>
                                 <Route path="/pcoview" component={waitFor(PcoView)}/>
-                                <Route path="/pcoviewnova" component={waitFor(PcoViewNova)}/>
+                                <Route path="/pcoviewgerente" component={waitFor(PcoView)}/>
+                                {/* <Route path="/pcoviewgerente?perfil=gerente" component={waitFor(PcoViewGerente)}/> */}
+                                <Route path="/pcoview2" component={waitFor(PcoViewNova)}/>
                                 <Route path="/pcoplan" component={waitFor(PcoPlan)}/>
 
                                 <Redirect to="/login"/>

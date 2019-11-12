@@ -14,14 +14,19 @@ const Menu = [
             translate: 'titles.login'
         },
         {
-            name: 'PCO',
+            name: 'PCO Admin',
             translate: 'titles.pco',
             path: 'pcoView'
         },
         {
-            name: 'PCONova',
+            name: 'PCO Gerente',
+            translate: 'titles.pcogerente',
+            path: 'pcoViewGerente'
+        },
+        {
+            name: 'PCO2',
             translate: 'titles.pco2',
-            path: 'pcoViewNova'
+            path: 'pcoView2'
         },
         {
             name: 'PCO Planilha',

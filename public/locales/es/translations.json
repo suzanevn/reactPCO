@@ -26,15 +26,18 @@
     "dec": "Dez",
     "decalt": "Dez Alt",
     "login": "Login",
-    "pco": "PCO",
+    "pco": "PCO Admin",
     "pco2": "PCO2",
+    "pcogerente": "PCO Gerente",
     "pcoplanilha": "PCO Planilha",
     "name":"Nome",
     "year":"Ano",
     "status":"Status",
     "action":"A\u00E7\u00F5es",
     "item":"Item",
-    "header":"Grupo / CC / Conta"
+    "header":"Grupo / CC / Conta",
+    "save":"Salvar",
+    "cancel":"Cancelar"
   },
   "dashboard": {
     "WELCOME": "Bienvenido a Angle"
